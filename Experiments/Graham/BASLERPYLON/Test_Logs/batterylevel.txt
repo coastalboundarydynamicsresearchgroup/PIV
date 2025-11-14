@@ -1,0 +1,38 @@
+
+Running Test Wed Nov 13 16:29:10 2024 - 25 photo(s) per test - 1 second(s) inbetween - 2000ms camera timeout
+
+Test 1 - Wed Nov 13 16:29:49 2024	: The camera failed to capture	4.0% of the time
+Test 2 - Wed Nov 13 16:30:30 2024	: The camera failed to capture	8.0% of the time
+Test 3 - Wed Nov 13 16:31:09 2024	: The camera failed to capture	0.0% of the time
+Test 4 - Wed Nov 13 16:31:44 2024	: The camera failed to capture	0.0% of the time
+Test 5 - Wed Nov 13 16:32:26 2024	: The camera failed to capture	16.0% of the time
+Test 6 - Wed Nov 13 16:33:04 2024	: The camera failed to capture	4.0% of the time
+Test 7 - Wed Nov 13 16:33:39 2024	: The camera failed to capture	0.0% of the time
+Test 8 - Wed Nov 13 16:34:20 2024	: The camera failed to capture	0.0% of the time
+Test 9 - Wed Nov 13 16:34:58 2024	: The camera failed to capture	0.0% of the time
+Test 10 - Wed Nov 13 16:35:36 2024	: The camera failed to capture	0.0% of the time
+Test 11 - Wed Nov 13 16:36:16 2024	: The camera failed to capture	0.0% of the time
+Test 12 - Wed Nov 13 16:36:55 2024	: The camera failed to capture	0.0% of the time
+Test 13 - Wed Nov 13 16:37:33 2024	: The camera failed to capture	0.0% of the time
+Test 14 - Wed Nov 13 16:38:10 2024	: The camera failed to capture	0.0% of the time
+Test 15 - Wed Nov 13 16:38:49 2024	: The camera failed to capture	0.0% of the time
+Test 16 - Wed Nov 13 16:39:26 2024	: The camera failed to capture	0.0% of the time
+Test 17 - Wed Nov 13 16:40:04 2024	: The camera failed to capture	0.0% of the time
+Test 18 - Wed Nov 13 16:40:42 2024	: The camera failed to capture	4.0% of the time
+Test 19 - Wed Nov 13 16:41:19 2024	: The camera failed to capture	0.0% of the time
+Test 20 - Wed Nov 13 16:41:56 2024	: The camera failed to capture	0.0% of the time
+Test 21 - Wed Nov 13 16:42:34 2024	: The camera failed to capture	0.0% of the time
+Test 22 - Wed Nov 13 16:43:12 2024	: The camera failed to capture	0.0% of the time
+Test 23 - Wed Nov 13 16:43:48 2024	: The camera failed to capture	0.0% of the time
+Test 24 - Wed Nov 13 16:44:28 2024	: The camera failed to capture	0.0% of the time
+Test 25 - Wed Nov 13 16:45:07 2024	: The camera failed to capture	0.0% of the time
+Test 26 - Wed Nov 13 16:45:42 2024	: The camera failed to capture	0.0% of the time
+Test 27 - Wed Nov 13 16:46:23 2024	: The camera failed to capture	4.0% of the time
+Test 28 - Wed Nov 13 16:47:03 2024	: The camera failed to capture	0.0% of the time
+Test 29 - Wed Nov 13 16:47:40 2024	: The camera failed to capture	0.0% of the time
+Test 30 - Wed Nov 13 16:48:20 2024	: The camera failed to capture	0.0% of the time
+Test 31 - Wed Nov 13 16:48:59 2024	: The camera failed to capture	0.0% of the time
+Test 32 - Wed Nov 13 16:49:35 2024	: The camera failed to capture	0.0% of the time
+Test 33 - Wed Nov 13 16:50:15 2024	: The camera failed to capture	0.0% of the time
+Test 34 - Wed Nov 13 16:50:53 2024	: The camera failed to capture	0.0% of the time
+Test 35 - Wed Nov 13 16:51:29 2024	: The camera failed to capture	0.0% of the time

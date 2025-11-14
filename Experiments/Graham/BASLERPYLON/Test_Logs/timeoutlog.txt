@@ -1,0 +1,32 @@
+
+Running Test Mon Oct 21 11:01:49 2024 - 25 photo(s) per test - 1 second(s) inbetween
+
+With a timeout of 2000ms : The camera failed to capture 0.0% of the time
+With a timeout of 1950ms : The camera failed to capture 4.0% of the time
+With a timeout of 1900ms : The camera failed to capture 8.0% of the time
+With a timeout of 1850ms : The camera failed to capture 8.0% of the time
+With a timeout of 1800ms : The camera failed to capture 0.0% of the time
+With a timeout of 1750ms : The camera failed to capture 0.0% of the time
+With a timeout of 1700ms : The camera failed to capture 0.0% of the time
+With a timeout of 1650ms : The camera failed to capture 4.0% of the time
+With a timeout of 1600ms : The camera failed to capture 12.0% of the time
+With a timeout of 1550ms : The camera failed to capture 4.0% of the time
+With a timeout of 1500ms : The camera failed to capture 0.0% of the time
+With a timeout of 1450ms : The camera failed to capture 0.0% of the time
+With a timeout of 1400ms : The camera failed to capture 0.0% of the time
+With a timeout of 1350ms : The camera failed to capture 0.0% of the time
+With a timeout of 1300ms : The camera failed to capture 0.0% of the time
+With a timeout of 1250ms : The camera failed to capture 0.0% of the time
+With a timeout of 1200ms : The camera failed to capture 0.0% of the time
+_genicam.RuntimeException: The camera device has been physically removed. : RuntimeException thrown (file 'instantcameraimpl.h', line 2083)
+
+Running Test Mon Oct 21 11:28:04 2024 - 25 photo(s) per test - 1 second(s) inbetween
+
+With a timeout of 1200ms : The camera failed to capture	0.0% of the time
+With a timeout of 1150ms : The camera failed to capture	16.0% of the time
+With a timeout of 1100ms : The camera failed to capture	8.0% of the time
+With a timeout of 1050ms : The camera failed to capture	0.0% of the time
+With a timeout of 1000ms : The camera failed to capture	12.0% of the time
+With a timeout of 950ms : The camera failed to capture	16.0% of the time
+With a timeout of 900ms : The camera failed to capture	24.0% of the time
+Test Force Stopped 
