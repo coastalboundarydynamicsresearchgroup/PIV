@@ -1,0 +1,12 @@
+#!/bin/bash
+echo $(pwd)
+docker container run \
+-it \
+--rm \
+--name=lisaber-picocc \
+--device /dev/ttyACM0 \
+-v "$(pwd)":/usr/src/picocc \
+-v "$(pwd)/../configuration/:/configuration" \
+-v "/dev/ttyACM0/:/dev/ttyACM0" \
+louisross/lisaber-picocc:1.0 \
+bash

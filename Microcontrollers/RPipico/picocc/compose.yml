@@ -1,0 +1,12 @@
+services:
+  sonar-systemmonitor:
+    container_name: lisaber-picocc
+    build: ./
+    image: "louisross/lisaber-picocc:1.0"
+    devices:
+      - "/dev/ttyACM0:/dev/ttyACM0"
+    tty: false
+    command: 'python3 ./picocc.py'
+    volumes:
+      - "./:/usr/src/picocc"
+      - "../configuration/:/configuration"

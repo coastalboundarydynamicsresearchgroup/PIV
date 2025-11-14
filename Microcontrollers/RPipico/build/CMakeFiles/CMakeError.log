@@ -1,0 +1,60 @@
+Detecting C compiler ABI info failed to compile with the following output:
+Change Dir: /home/piv/pico/build/CMakeFiles/CMakeScratch/TryCompile-ssvClx
+
+Run Build Command(s):/usr/bin/ninja cmTC_1ae8d && [1/2] Building C object CMakeFiles/cmTC_1ae8d.dir/CMakeCCompilerABI.c.o
+FAILED: CMakeFiles/cmTC_1ae8d.dir/CMakeCCompilerABI.c.o 
+/usr/bin/aarch64-linux-gnu-gcc   -mcpu=cortex-m0plus -mthumb    -v -std=gnu11 -o CMakeFiles/cmTC_1ae8d.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake-3.25/Modules/CMakeCCompilerABI.c
+Using built-in specs.
+COLLECT_GCC=/usr/bin/aarch64-linux-gnu-gcc
+aarch64-linux-gnu-gcc: error: unrecognized command-line option '-mthumb'
+Target: aarch64-linux-gnu
+Configured with: ../src/configure -v --with-pkgversion='Debian 12.2.0-14' --with-bugurl=file:///usr/share/doc/gcc-12/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-12 --program-prefix=aarch64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-libquadmath --disable-libquadmath-support --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --enable-fix-cortex-a53-843419 --disable-werror --enable-checking=release --build=aarch64-linux-gnu --host=aarch64-linux-gnu --target=aarch64-linux-gnu
+Thread model: posix
+Supported LTO compression algorithms: zlib zstd
+gcc version 12.2.0 (Debian 12.2.0-14) 
+ninja: build stopped: subcommand failed.
+
+
+
+
+Determining if the C compiler works failed with the following output:
+Change Dir: /home/piv/pico/build/CMakeFiles/CMakeScratch/TryCompile-cH2MOM
+
+Run Build Command(s):/usr/bin/ninja cmTC_70570 && [1/2] Building C object CMakeFiles/cmTC_70570.dir/testCCompiler.c.o
+FAILED: CMakeFiles/cmTC_70570.dir/testCCompiler.c.o 
+/usr/bin/aarch64-linux-gnu-gcc   -mcpu=cortex-m0plus -mthumb  -std=gnu11 -o CMakeFiles/cmTC_70570.dir/testCCompiler.c.o -c /home/piv/pico/build/CMakeFiles/CMakeScratch/TryCompile-cH2MOM/testCCompiler.c
+aarch64-linux-gnu-gcc: error: unrecognized command-line option ‘-mthumb’
+ninja: build stopped: subcommand failed.
+
+
+
+Detecting C compiler ABI info failed to compile with the following output:
+Change Dir: /home/piv/pico/build/CMakeFiles/CMakeScratch/TryCompile-9LIcRF
+
+Run Build Command(s):/usr/bin/ninja cmTC_fd86f && [1/2] Building C object CMakeFiles/cmTC_fd86f.dir/CMakeCCompilerABI.c.o
+FAILED: CMakeFiles/cmTC_fd86f.dir/CMakeCCompilerABI.c.o 
+/usr/bin/aarch64-linux-gnu-gcc   -mcpu=cortex-m0plus -mthumb    -v -std=gnu11 -o CMakeFiles/cmTC_fd86f.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake-3.25/Modules/CMakeCCompilerABI.c
+Using built-in specs.
+COLLECT_GCC=/usr/bin/aarch64-linux-gnu-gcc
+aarch64-linux-gnu-gcc: error: unrecognized command-line option '-mthumb'
+Target: aarch64-linux-gnu
+Configured with: ../src/configure -v --with-pkgversion='Debian 12.2.0-14' --with-bugurl=file:///usr/share/doc/gcc-12/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-12 --program-prefix=aarch64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-libquadmath --disable-libquadmath-support --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --enable-fix-cortex-a53-843419 --disable-werror --enable-checking=release --build=aarch64-linux-gnu --host=aarch64-linux-gnu --target=aarch64-linux-gnu
+Thread model: posix
+Supported LTO compression algorithms: zlib zstd
+gcc version 12.2.0 (Debian 12.2.0-14) 
+ninja: build stopped: subcommand failed.
+
+
+
+
+Determining if the C compiler works failed with the following output:
+Change Dir: /home/piv/pico/build/CMakeFiles/CMakeScratch/TryCompile-dWD6a5
+
+Run Build Command(s):/usr/bin/ninja cmTC_e60d2 && [1/2] Building C object CMakeFiles/cmTC_e60d2.dir/testCCompiler.c.o
+FAILED: CMakeFiles/cmTC_e60d2.dir/testCCompiler.c.o 
+/usr/bin/aarch64-linux-gnu-gcc   -mcpu=cortex-m0plus -mthumb  -std=gnu11 -o CMakeFiles/cmTC_e60d2.dir/testCCompiler.c.o -c /home/piv/pico/build/CMakeFiles/CMakeScratch/TryCompile-dWD6a5/testCCompiler.c
+aarch64-linux-gnu-gcc: error: unrecognized command-line option ‘-mthumb’
+ninja: build stopped: subcommand failed.
+
+
+
