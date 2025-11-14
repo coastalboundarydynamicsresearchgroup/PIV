@@ -1,0 +1,12 @@
+services:
+  sonar-deploy:
+    container_name: piv-exec
+    build: ./
+    image: "louisross/piv-exec:1.1"
+    devices:
+      - "/dev/ttyACM0:/dev/ttyACM0"
+    tty: false
+    volumes:
+      - "./:/usr/src/app"
+      - "../configuration/:/configuration"
+      - "/pivdata/:/piv"

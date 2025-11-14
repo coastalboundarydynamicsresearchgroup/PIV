@@ -1,0 +1,30 @@
+services:
+  piv-deploy:
+    container_name: piv-deploy
+    restart: unless-stopped
+    build: ./pivdeploy/
+    image: "louisross/piv-deploy:1.1"
+    tty: true
+    command: 'npm start'
+    ports:
+      - 5000:5000
+    volumes:
+      - "./pivdeploy:/usr/src/app"
+      - "./configuration/:/configuration"
+      - "/pivdata/:/piv"
+  piv-portal:
+    container_name: piv-portal
+    restart: unless-stopped
+    build: "./portal"
+    image: "louisross/portal:1.1"
+    tty: true
+    command: 'npm start'
+    ports:
+      - 80:3000
+    volumes:
+      - "./portal/:/app"
+      - "./configuration/:/app/portal-app/src/configuration"
+      - "/pivdata/:/piv"
+    depends_on:
+      - piv-deploy
+

@@ -1,0 +1,13 @@
+#!/bin/bash
+echo $(pwd)
+docker container run \
+-it \
+--rm \
+--name=sonar-deploy \
+--device /dev/ttyACM0 \
+-v "$(pwd)":/usr/src/app \
+-v "$(pwd)/../configuration/:/configuration" \
+-v "/pivdata/:/piv" \
+-v "/dev/ttyACM0/:/dev/ttyACM0" \
+louisross/piv-exec:1.0 \
+bash
