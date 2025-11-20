@@ -4,8 +4,8 @@ import math
 import json
 import requests
 
-configurationpath = '/piv/configuration/'
-dataPathRoot = '/piv/data/'
+configurationpath = '/pivdata/configuration/'
+dataPathRoot = '/pivdata/data/'
 
 result = { 'success': False, 'message': 'Unknown error' }
 

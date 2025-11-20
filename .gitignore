@@ -39,3 +39,6 @@
 
 # debug information files
 *.dwo
+src/pivdeploy/node_modules/*
+Microcontrollers/RPipico/picocc/__pycache__/*
+src/pivexec/__pycache__/*
