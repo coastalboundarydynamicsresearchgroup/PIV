@@ -5,7 +5,7 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
 
-configurationpath = '/piv/configuration'
+configurationpath = '/pivdata/configuration'
 
 
 class RunState:

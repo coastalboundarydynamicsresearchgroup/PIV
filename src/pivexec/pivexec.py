@@ -7,7 +7,7 @@ from hardwarecomm import HardwareCommChannel
 from flirexecutecompose import FlirExecuteCompose
 from picoexecutecompose import PicoExecuteCompose
 
-configurationpath = '/piv/configuration/'
+configurationpath = '/pivdata/configuration/'
 
 
 def ExecuteDeploy(runstate):

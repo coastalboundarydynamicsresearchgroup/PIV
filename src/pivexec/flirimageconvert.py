@@ -3,7 +3,7 @@ import numpy as np
 import json
 import os
 
-dataPathRoot = '/piv/data/'
+dataPathRoot = '/pivdata/data/'
 
 class ImageConverter:
   def __init__(self):
