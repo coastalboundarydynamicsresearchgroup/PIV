@@ -3,7 +3,7 @@ import PivConfigField from './piv-configfield';
 import SonarPingData from './sonar-pingdata';
 
 
-const PivConfigBoxTest = ({pingdata, connectionstyle, setconnectionstyle, onChangeFunc}) => {
+const PivConfigBoxTest = ({pingdata, onChangeFunc}) => {
   return (
         <div className="configurationbox">
           <div className="configurationgroup">

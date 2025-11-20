@@ -2,10 +2,10 @@ import './App.css';
 import PivConfigBoxNormal from './piv-configbox-normal';
 import PivConfigBoxTest from './piv-configbox-test';
 
-const PivConfigBox = ({deploying, deployrunning, onChangeFunc, pingdata, test, connectionstyle, setconnectionstyle}) => {
+const PivConfigBox = ({deploying, deployrunning, onChangeFunc, pingdata, test}) => {
     return (
       <>
-        {test ? <PivConfigBoxTest pingdata={pingdata} connectionstyle={connectionstyle} setconnectionstyle={setconnectionstyle} onChangeFunc={onChangeFunc}/> : <PivConfigBoxNormal deploying={deploying} deployrunning={deployrunning} connectionstyle={connectionstyle} setconnectionstyle={setconnectionstyle} onChangeFunc={onChangeFunc}/>}
+        {test ? <PivConfigBoxTest pingdata={pingdata} onChangeFunc={onChangeFunc}/> : <PivConfigBoxNormal deploying={deploying} deployrunning={deployrunning} onChangeFunc={onChangeFunc}/>}
       </>
     );
 }

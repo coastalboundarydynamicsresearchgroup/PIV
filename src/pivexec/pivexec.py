@@ -4,7 +4,6 @@ import json
 
 from filewatcher import Watcher
 from hardwarecomm import HardwareCommChannel
-from flirexecutecompose import FlirExecuteCompose
 from picoexecutecompose import PicoExecuteCompose
 
 configurationpath = '/pivdata/configuration/'
@@ -14,19 +13,8 @@ def ExecuteDeploy(runstate):
   """ Callback sent to the file watcher that allows
       the deployment to execute when a runfile is present.
   """
-  connectionStyle = "flir"
-  if 'ConnectionStyle' in runstate.configuration:
-    connectionStyle = runstate.configuration['ConnectionStyle']
-
-  if connectionStyle == "flir":
-    deployer = FlirExecuteCompose(runstate)
-    deployer.compose_and_execute()
-  elif connectionStyle == "pico":
-    deployer = PicoExecuteCompose(runstate)
-    deployer.compose_and_execute()
-  else:
-    print("Unknown connection style: " + connectionStyle)
-    return
+  deployer = PicoExecuteCompose(runstate)
+  deployer.compose_and_execute()
 
 
 """

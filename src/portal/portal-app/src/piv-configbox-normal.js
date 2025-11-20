@@ -1,8 +1,5 @@
-import { useState, useEffect } from 'react';
 import './App.css';
 import PivConfigField from './piv-configfield';
-import PivCheckBox from './piv-checkbox';
-import PivRadioGroup from './piv-radiogroup';
 import PivProgressField from './piv-progressfield';
 import PivUpdateField from './piv-updatefield';
 import PivStatusLed from './piv-statusled';
@@ -11,27 +8,17 @@ import PivStatusLed from './piv-statusled';
 //const baseBackendUrl = 'http://' + configuration.services.backend.host + ':' + configuration.services.backend.port;
 
 
-const PivConfigBoxNormal = ({deploying, deployrunning, connectionstyle, setconnectionstyle, onChangeFunc}) => {
-
-  const radioOptions = [
-    { label: 'Flir', value: 'flir' },
-    { label: 'Pico', value: 'pico' },
-  ];
+const PivConfigBoxNormal = ({deploying, deployrunning, onChangeFunc}) => {
 
   return (
         <div className="configurationbox">
           <div style={{fontSize: '18pt', padding: '18px'}} >Camera and Laser</div>
 
           <div className="configurationgroup">
-            <div className="Connection Method">
-              <PivRadioGroup name="connectionmethod" options={radioOptions} selectedValue={connectionstyle} setselectedValue={setconnectionstyle} onChange={onChangeFunc}/>
-            </div>
-            
             <fieldset style={{ border: '1px solid #ccc', padding: '1px', width: '99%', justifyContent: 'center' }}>
               <legend style={{ padding: '0 10px' }}>General</legend>
               <div className="configurationrow">
                 <PivConfigField fieldname="minutes" fieldTitle="Delay to start (minutes)" initialValue="5" onChangeFunc={onChangeFunc}></PivConfigField>
-                <PivCheckBox fieldname="debugbox" fieldTitle="Debug" initialValue="debug" onChangeFunc={onChangeFunc}></PivCheckBox>
               </div>
             </fieldset>
           </div>

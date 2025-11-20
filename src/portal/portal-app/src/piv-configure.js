@@ -7,7 +7,7 @@ import PivConfigButtons from './piv-configbuttons'
 const baseBackendUrl = 'http://' + configuration.services.backend.host + ':' + configuration.services.backend.port;
 
 
-const PivConfigure = ({getState, setState, deploying, deployrunning, onTestClicked, onPingData, test, connectionstyle, setconnectionstyle}) => {
+const PivConfigure = ({getState, setState, deploying, deployrunning, onTestClicked, onPingData, test}) => {
   const [configurations, setConfigurations] = useState([]);
   const [configurationChanged, setConfigurationChanged] = useState(0);
   const [selectedConfiguration, setSelectedConfiguration] = useState(0);
@@ -28,7 +28,7 @@ const PivConfigure = ({getState, setState, deploying, deployrunning, onTestClick
         fetch(baseBackendUrl + '/configuration/' + configName, { method: 'GET', mode: 'cors' })
         .then(data => data.json())
         .then(response => {
-          DistributeConfiguration(setconnectionstyle, response);
+          DistributeConfiguration(response);
           setState('nametouched', false);
           setState('valuetouched', false);
           if (messages) {
@@ -40,13 +40,13 @@ const PivConfigure = ({getState, setState, deploying, deployrunning, onTestClick
   }, [configurationChanged, selectedConfiguration]);
   
   const onCreate = () => {
-    WriteConfiguration(connectionstyle, () => {
+    WriteConfiguration(() => {
       setConfigurationChanged(configurationChanged + 1);
     });
   }
 
   const onSave = () => {
-    WriteConfiguration(connectionstyle, () => {
+    WriteConfiguration(() => {
       setConfigurationChanged(configurationChanged + 1);
     });
   }

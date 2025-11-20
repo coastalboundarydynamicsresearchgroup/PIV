@@ -2,10 +2,8 @@ import configuration from './configuration/configuration.json';
 const baseBackendUrl = 'http://' + configuration.services.backend.host + ':' + configuration.services.backend.port;
 
 
-const DistributeConfiguration = (setconnectionstyle, configuration) => {
-  setconnectionstyle(configuration.ConnectionStyle);
+const DistributeConfiguration = (configuration) => {
   document.getElementById("minutes").value = configuration.Minutes;
-  document.getElementById("debugbox").checked = configuration.Debug;
   document.getElementById("camerablacklevel").value = configuration.CameraBlacklevel;
   document.getElementById("cameragain").value = configuration.CameraGain;
   document.getElementById("cameragamma").value = configuration.CameraGamma;
@@ -88,14 +86,12 @@ const ValidateCheckField = (fieldName) => {
   return fieldValue;
 }
 
-const WriteConfiguration = (connectionstyle, onDoneHandler) => {
+const WriteConfiguration = (onDoneHandler) => {
   isValidInput = true;
 
   const configuration = {};
 
-  configuration.ConnectionStyle = connectionstyle;
   configuration.Minutes = ValidateFloatField("minutes", 0, 59, 0.1);
-  configuration.Debug = ValidateCheckField("debugbox");
   configuration.CameraBlacklevel = ValidateIntField("camerablacklevel", 0, 100, 1);
   configuration.CameraGain = ValidateIntField("cameragain", 0, 47, 1);
   configuration.CameraGamma = ValidateFloatField("cameragamma", 0.5, 2.0, 0.1);

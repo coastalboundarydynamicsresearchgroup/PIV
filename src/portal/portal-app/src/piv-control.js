@@ -9,7 +9,6 @@ const PivControl = () => {
     const [configValueTouched, setConfigValueTouched] = useState(false);
     const [test, setTest] = useState(false);
     const [testdata, setTestdata] = useState("");
-    const [connectionStyle, setConnectionStyle] = useState("flir");
 
     const [deploying, setDeploying] = useState(false);
     const [deployrunning, setDeployrunning] = useState(false);
@@ -107,8 +106,8 @@ const PivControl = () => {
             <div className="messages">
                 <div className="configurationsLabel">Select a configuration, edit, and deploy</div>
                 <div className="configurations">
-                    <PivConfigure getState={getState} setState={setState} deploying={deploying} deployrunning={deployrunning} onTestClicked={onTestClicked} onPingData={onPivTestData} test={test} connectionstyle={connectionStyle} setconnectionstyle={setConnectionStyle} />
-                    <PivConfigBox  onChangeFunc={() => setState('valuetouched', true)} deploying={deploying} deployrunning={deployrunning} pingdata={testdata} test={test} connectionstyle={connectionStyle} setconnectionstyle={setConnectionStyle} />
+                    <PivConfigure getState={getState} setState={setState} deploying={deploying} deployrunning={deployrunning} onTestClicked={onTestClicked} onPingData={onPivTestData} test={test} />
+                    <PivConfigBox  onChangeFunc={() => setState('valuetouched', true)} deploying={deploying} deployrunning={deployrunning} pingdata={testdata} test={test} />
                 </div>
                 <textarea name="messages" id="messages" cols="120" rows="8" readOnly></textarea>
                 <textarea name="status" id="status" cols="120" rows="5" readOnly></textarea>
