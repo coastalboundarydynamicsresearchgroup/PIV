@@ -49,8 +49,6 @@ class PicoExecuteCompose(PivExecuteCompose):
   def pico_send_configuration(self, picocc):
     configuration = self.runstate.configuration
     configuration['Command'] = 'Configure'
-    if 'Debug' in configuration and configuration['Debug']:
-       configuration["DebugMultiplier"] = 1000
     result = self.transact_pico(picocc, configuration)
     self.emit_status('Pico configuration sent', logToProgress=True, options={'deployrunning':True})
     return result
