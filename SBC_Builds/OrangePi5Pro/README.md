@@ -84,7 +84,8 @@ Use lsblk again to see the name of the partition you just created.  It is probab
 - Log in as `piv` (password `piv`).
 - Create a mount point.  This will be used in `fstab` below, and will be where you see the data for this drive:
 
-`sudo mkdir /pivdata`
+`sudo mkdir /pivdata`  
+`sudo chown piv:piv /pivdata`  
 
 - At the command prompt, enter:
 

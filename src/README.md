@@ -27,4 +27,9 @@ The PIV code is assumed to have been cloned from the github repository into a fo
 
 Execute the generic steps above in the `~/github/PIV/src/pivdeploy` directory, commiting the 1.1 version as `louisross/piv-deploy:1.1`.
 
-## Boot the OrangePi
+## Install Dependencies for pivexec Component
+`$ python -m pip install --user watchdog,pyserial,requests`
+
+`$ mkdir /pivdata/data`  
+`$ mkdir /pivdata/configuration`  
+
