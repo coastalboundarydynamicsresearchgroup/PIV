@@ -5,7 +5,7 @@
 Some of the components of the PIV controller run in docker containers, and the first step in software setup is to build these containers.  
 There are scripts for these components, which do the majority of the setup work, but the `npm install` step sometimes fails during the build and must be done manually later:
 - `./dockb`       # Build the 1.0 version of the container  
-- `./dock-start`  # Launch a console in the (posibly) partially-built container  
+- `./dock-start`  # Launch a console in the (possibly) partially-built container  
 - `npm start`     # Attempt to run the component inside the container, if it fails then:  
 - `npm install`   # Redo the failed step  
 - `npm start`     # Rerun the component inside the container, confirm it works now  

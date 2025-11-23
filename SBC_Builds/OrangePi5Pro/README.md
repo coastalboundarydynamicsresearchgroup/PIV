@@ -6,7 +6,8 @@
 - Optional, but recommended: Install an eMMC module on the back and install a new copy of Linux on it.  The eMMC module is larger, faster, and more reliable than the micro SD card.
   - Install the eMMC module on the back of the OrangePi 5 Pro. See the details in section 2.5.1 of the [manual](./OrangePi_5_Pro_RK3588S_User%20Manual_v1.3-1.pdf), on page 53. Press the two connectors firmly until they snap into place.  **BE SURE TO ORIENT THE MODULE CORRECTLY AS INDICATED BY THE CORNER CUTOUT IN THE SILKSCREEN OUTLINE**
   - Copy the same Ubuntu image file onto the OrangePi 5 Pro using
-  `$ scp Orangepi5pro_1.0.6_ubuntu_jammy_desktop_xfce_linux6.1.43.img orangepi@<IP address>:/home/orangepi` # On your host computer. Alternatively, put the file on a USB drive and copy it from there to the `/home/orangepi` directory.
+  `$ scp Orangepi5pro_1.0.6_ubuntu_jammy_desktop_xfce_linux6.1.43.img orangepi@<IP address>:/home/orangepi` # On your host computer.  
+  Alternatively, put the file on a USB drive and copy it from there to the `/home/orangepi` directory.
   - The following steps are covered in more detail in section 2.5.2 of the [manual](./OrangePi_5_Pro_RK3588S_User%20Manual_v1.3-1.pdf), starting on page 52.  For the following steps, log into OrantePi 5 Pro as the `orangepi` user and open a console.
   ![](./orangepi5pro_lsblk_emmc.png)
   - Determine the folder name of the eMMC module.  This example shows the use of the `lsblk` command when the system is booted from the micro SD card.  The goal is to find the name, in this case `mmcblk0`, of the eMMC device.  A couple of hints here give it away
@@ -25,7 +26,7 @@
 
       NOTE: The `count=233000` in the first command is derived from the size of the eMMC module, which is 256 GB, or 256,000 * 1 MB.  It is 233 rather than 256 because the `sudo fdisk -l` command lists the drive's capacity as 232.96 GiB.  Using the specified capacity of `count=256000` should work as well.
 
- - Power off the Orangepi 5 Pro and remove the micros SD card.  Short-press the power button and confirm that Ubuntu boots directly from the eMMC module.
+  - Power off the Orangepi 5 Pro and remove the micros SD card.  Short-press the power button and confirm that Ubuntu boots directly from the eMMC module.
 
  - Bring the Ubuntu distro up to date with
    - `sudo apt update`
