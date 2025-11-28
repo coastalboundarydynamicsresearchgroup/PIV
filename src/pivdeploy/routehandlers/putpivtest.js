@@ -27,7 +27,7 @@ var putPivTest = async function(req, res) {
   console.log(`Loading configuration ${configurationFile}`);
 
   if (fs.existsSync(configurationFile)) {
-    configuration = fs.readFileSync(configurationFile, 'utf8');
+    configuration = JSON.parse(fs.readFileSync(configurationFile, 'utf8'));
     const runFileSet = GenerateTestConfigurations(configuration, testSteppings);
     const runfile = { "configurationName": runFileSet };
     const runFilePath = configurationPath + '__runfile__.deploy';
