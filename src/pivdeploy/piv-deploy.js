@@ -11,6 +11,7 @@ const getconfiguration = require('./routehandlers/getconfiguration');
 const deleteconfiguration = require('./routehandlers/deleteconfiguration');
 const getDataset = require('./routehandlers/getdataset');
 const {putPivDeploy, putPivUndeploy} = require('./routehandlers/putpivdeploy');
+const {putPivTest, putPivStopTest} = require('./routehandlers/putpivtest');
 const getDeployProgress = require('./routehandlers/getdeployprogress');
 const putPivProgress = require('./routehandlers/putpivprogress');
 
@@ -44,6 +45,12 @@ router.put('/piv/execute/:configurationName', [putPivDeploy]);
 
 // Put the command to stop any previously executed configuration.
 router.put('/piv/stop', [putPivUndeploy]);
+
+// Put the command to execute with the specified configuration.
+router.put('/piv/test/:configurationName', [putPivTest]);
+
+// Put the command to stop any previously executed configuration.
+router.put('/piv/stoptest', [putPivStopTest]);
 
 // Get the deploy progress.
 router.get('/piv/execute/progress', [getDeployProgress]);

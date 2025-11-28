@@ -1,4 +1,5 @@
 import os
+import shutil
 import time
 import math
 import json
@@ -17,11 +18,18 @@ class PivExecuteCompose:
     baseBackendUrl = ''
 
     def __init__(self, runstate):
+        global dataPathRoot
+        
         configuration = {}
         with open('../configuration/configuration.json') as f:
             configuration = json.load(f)
         PivExecuteCompose.baseBackendUrl = 'http://' + configuration['services']['backend']['host'] + ':' + configuration['services']['backend']['port']
-        self.pivFilePath = dataPathRoot + '/default/'
+        if self.runstate.test:
+            dataPathRoot = dataPathRoot + 'test/'
+            shutil.rmtree(dataPathRoot, ignore_errors=True)
+            os.makedirs(dataPathRoot)
+
+        self.pivFilePath = dataPathRoot + 'default/'
 
         self.runstate = runstate
 
