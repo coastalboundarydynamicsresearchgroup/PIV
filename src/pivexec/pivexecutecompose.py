@@ -24,6 +24,9 @@ class PivExecuteCompose:
         with open('../configuration/configuration.json') as f:
             configuration = json.load(f)
         PivExecuteCompose.baseBackendUrl = 'http://' + configuration['services']['backend']['host'] + ':' + configuration['services']['backend']['port']
+
+        self.runstate = runstate
+
         if self.runstate.test:
             dataPathRoot = dataPathRoot + 'test/'
             shutil.rmtree(dataPathRoot, ignore_errors=True)
@@ -31,7 +34,6 @@ class PivExecuteCompose:
 
         self.pivFilePath = dataPathRoot + 'default/'
 
-        self.runstate = runstate
 
         self.makeNewDataFolder()
 
@@ -61,7 +63,7 @@ class PivExecuteCompose:
             timestamp = "{year:04d}-{month:02d}-{day:02d} {hour:02d}:{minute:02d}:{second:02d}".format(year=utcDateTime.tm_year, month=utcDateTime.tm_mon, day=utcDateTime.tm_mday, hour=utcDateTime.tm_hour, minute=utcDateTime.tm_min, second=utcDateTime.tm_sec)
 
             if logToFile:
-                if self.runstate.debug:
+                if self.runstate.test:
                     print(timestamp + ': ' + message)
 
                 with open(logFile, "a") as outfile:

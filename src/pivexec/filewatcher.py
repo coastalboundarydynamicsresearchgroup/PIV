@@ -29,6 +29,8 @@ class RunState:
         return self.test
 
     def get_configurationName(self):
+        if isinstance(self.configurationName, list):
+            return ', '.join(self.configurationName)
         return self.configurationName
     
     def get_configuration(self):
@@ -84,7 +86,7 @@ class DeployHandler(FileSystemEventHandler):
         self.runstate.configurationName = configurationName
         self.runstate.running = running
         self.runstate.runChange = runChange
-        print('Run state: ' + self.runstate.configurationName + ' Running' if self.runstate.running else ' NOT Running' + ' runchange ' if self.runstate.runChange else ' NOT runchange ' + str(self.runstate.configuration))
+        print('Run state: ' + self.runstate.get_configurationName() + ' Running' if self.runstate.running else ' NOT Running' + ' runchange ' if self.runstate.runChange else ' NOT runchange ' + str(self.runstate.configuration))
 
     def executeImmediate(self, executeFilePath):
         # TODO - Execute the immediate command
@@ -121,15 +123,15 @@ class Watcher:
             for configName in self.handler.runstate.configurationName:
                 self.load_configuration(configName)
                 if self.handler.runstate.is_running():
-                    print('Runstate is running, calling run handler')
+                    print(f'Runstate is running for test, calling run handler for {configName}')
                     self.runHandler(self.handler.runstate)
-                    print('Run is complete, resetting runstate')
         elif isinstance(self.handler.runstate.configurationName, str):
             self.load_configuration(self.handler.runstate.configurationName)
             if self.handler.runstate.is_running():
                 print('Runstate is running, calling run handler')
                 self.runHandler(self.handler.runstate)
-                print('Run is complete, resetting runstate')
+
+        print('Run is complete, resetting runstate')
 
         self.handler.runstate.Reset()
 
@@ -137,6 +139,7 @@ class Watcher:
     def load_configuration(self, configurationName):
         fullpathname = configurationpath + '/' + configurationName + ".json"
         if os.path.isfile(fullpathname):
+            print(f'Loading configuration {fullpathname}')
             with open(fullpathname, 'r') as configfile:
                 self.handler.runstate.configuration = json.load(configfile)
         else:
