@@ -142,7 +142,7 @@ class Watcher:
             self.load_configuration(self.handler.runstate.configurationName)
             if self.handler.runstate.is_running():
                 print('Runstate is running, calling run handler')
-                self.runHandler(self.handler.runstate, doDelay=True)
+                self.runHandler(self.handler.runstate)
 
         print('Run is complete, resetting runstate')
 
