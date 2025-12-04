@@ -121,6 +121,10 @@ class Watcher:
         if isinstance(self.handler.runstate.configurationName, list):
             self.handler.runstate.test = True
             for configName in self.handler.runstate.configurationName:
+                # Every time self.runHandler (below) completes, the running flag will be false.
+                if self.handler.runstate.is_test():
+                    self.handler.runstate.running = True
+
                 self.load_configuration(configName)
                 if self.handler.runstate.is_running():
                     print(f'Runstate is running for test, calling run handler for {configName}')
