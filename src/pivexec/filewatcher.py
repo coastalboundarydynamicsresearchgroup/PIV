@@ -1,4 +1,5 @@
 import os
+import glob
 import json
 import time
 from watchdog.observers import Observer
@@ -129,6 +130,8 @@ class Watcher:
                 if self.handler.runstate.is_running():
                     print(f'Runstate is running for test, calling run handler for {configName}')
                     self.runHandler(self.handler.runstate)
+            self.clean_old_test_configurations()
+            
         elif isinstance(self.handler.runstate.configurationName, str):
             self.load_configuration(self.handler.runstate.configurationName)
             if self.handler.runstate.is_running():
@@ -150,3 +153,15 @@ class Watcher:
             self.handler.runstate.running = False
             self.handler.runstate.runChange = False
 
+    def clean_old_test_configurations(self):
+        full_pattern = os.path.join(configurationpath, "__test*.json")
+
+        # List files matching the pattern
+        test_files = glob.glob(full_pattern)        
+        for test_file in test_files:
+            if os.path.isfile(test_file):  # Ensure it's a file, not a subdirectory
+                try:
+                    os.remove(test_file)
+                    print(f"Deleted: {test_file}")
+                except OSError as e:
+                    print(f"Error deleting {test_file}: {e}")
