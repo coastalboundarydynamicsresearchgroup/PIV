@@ -16,7 +16,7 @@ var getConfigurations = function(req, res) {
       return;
     }
 
-    const configurationFiles = files.filter(file => path.extname(file) === '.json');
+    const configurationFiles = files.filter(file => (path.extname(file) === '.json') && !file.startsWith('__'));
     const configurationNames = configurationFiles.map(file => path.basename(file, '.json'));
 
     console.log(`Found configuration names: ${configurationNames}`);
