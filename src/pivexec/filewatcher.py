@@ -121,6 +121,7 @@ class Watcher:
     def execute_configurations(self):
         if isinstance(self.handler.runstate.configurationName, list):
             self.handler.runstate.test = True
+            doDelay = True
             for configName in self.handler.runstate.configurationName:
                 # Every time self.runHandler (below) completes, the running flag will be false.
                 if self.handler.runstate.is_test():
@@ -129,14 +130,17 @@ class Watcher:
                 self.load_configuration(configName)
                 if self.handler.runstate.is_running():
                     print(f'Runstate is running for test, calling run handler for {configName}')
-                    self.runHandler(self.handler.runstate)
+                    self.runHandler(self.handler.runstate, doDelay)
+
+                # Only delay for the first test in the run.
+                doDelay = False
             self.clean_old_test_configurations()
-            
+
         elif isinstance(self.handler.runstate.configurationName, str):
             self.load_configuration(self.handler.runstate.configurationName)
             if self.handler.runstate.is_running():
                 print('Runstate is running, calling run handler')
-                self.runHandler(self.handler.runstate)
+                self.runHandler(self.handler.runstate, doDelay=True)
 
         print('Run is complete, resetting runstate')
 

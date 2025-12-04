@@ -9,12 +9,12 @@ from picoexecutecompose import PicoExecuteCompose
 configurationpath = '/pivdata/configuration/'
 
 
-def ExecuteDeploy(runstate):
+def ExecuteDeploy(runstate, doDelay=True):
   """ Callback sent to the file watcher that allows
       the deployment to execute when a runfile is present.
   """
   deployer = PicoExecuteCompose(runstate)
-  deployer.compose_and_execute()
+  deployer.compose_and_execute(doDelay)
 
 
 """
