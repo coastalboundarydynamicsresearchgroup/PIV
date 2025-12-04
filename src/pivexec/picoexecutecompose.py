@@ -122,7 +122,7 @@ class PicoExecuteCompose(PivExecuteCompose):
           while self.runstate.is_running() and duration < PicoExecuteCompose.samplePeriod:
             #sleepTime = 0.1 if PicoExecuteCompose.samplePeriod - duration >= 0.1 else PicoExecuteCompose.samplePeriod - duration
             #time.sleep(sleepTime)
-            camera.acquire_image(self.pivFilePath)
+            camera.acquire_image(self.pivFilePath, convert=self.runstate.is_test())
             duration += 0.1
 
             if status['IsRunning'] != 1:
@@ -133,7 +133,7 @@ class PicoExecuteCompose(PivExecuteCompose):
         # Clean any remaining images out of the camera buffer.
         images_remain = True
         while images_remain:
-          images_remain = camera.acquire_image(self.pivFilePath)
+          images_remain = camera.acquire_image(self.pivFilePath, convert=self.runstate.is_test())
 
         camera.end_acquisition_mode()
         self.camera_reset_configuration(camera)
