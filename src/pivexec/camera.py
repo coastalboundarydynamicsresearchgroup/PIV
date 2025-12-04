@@ -363,7 +363,7 @@ class Camera:
     return
 
 
-  def acquire_image(self, folder='./'):
+  def acquire_image(self, folder='./', convert=False):
     """
     This function acquires and saves 10 images from a device.
     Please see Acquisition example for more in-depth comments on acquiring images.
@@ -385,9 +385,11 @@ class Camera:
         filename = f'Trigger-{self.caminfo["DeviceSerialNumber"]}-{self.imagenumber}.raw'
         image_result.Save(folder + filename)
 
-        #image_converted = self.convert_image(image_result)
-        #filename = f'Trigger-{self.caminfo["DeviceSerialNumber"]}-{self.imagenumber}.jpg'
-        #image_converted.Save(folder + filename)
+        # Do in-line jpg conversion in test mode only.
+        if convert:
+          image_converted = self.convert_image(image_result)
+          filename = f'Trigger-{self.caminfo["DeviceSerialNumber"]}-{self.imagenumber}.jpg'
+          image_converted.Save(folder + filename)
 
         image_result.Release()
         self.imagenumber += 1
