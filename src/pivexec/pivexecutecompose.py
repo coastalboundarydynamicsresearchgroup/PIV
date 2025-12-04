@@ -86,8 +86,13 @@ class PivExecuteCompose:
         global pivFilePath
         global logFile
 
-        utcDateTime = time.gmtime()
-        data_folder = "{year:04d}-{month:02d}-{day:02d}_{hour:02d}.{minute:02d}.{second:02d}".format(year=utcDateTime.tm_year, month=utcDateTime.tm_mon, day=utcDateTime.tm_mday, hour=utcDateTime.tm_hour, minute=utcDateTime.tm_min, second=utcDateTime.tm_sec)
+        data_folder = 'default'
+        if self.runstate.is_test():
+            data_folder = self.runstate.get_configurationName()
+        else:
+            utcDateTime = time.gmtime()
+            data_folder = "{year:04d}-{month:02d}-{day:02d}_{hour:02d}.{minute:02d}.{second:02d}".format(year=utcDateTime.tm_year, month=utcDateTime.tm_mon, day=utcDateTime.tm_mday, hour=utcDateTime.tm_hour, minute=utcDateTime.tm_min, second=utcDateTime.tm_sec)
+
         self.pivFilePath = self.dataPath + data_folder + '/'
 
         if not os.path.exists(self.pivFilePath):
