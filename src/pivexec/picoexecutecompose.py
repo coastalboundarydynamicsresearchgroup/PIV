@@ -83,7 +83,7 @@ class PicoExecuteCompose(PivExecuteCompose):
     camera.reset_gain()
     camera.reset_gamma()
 
-  def compose_and_execute(self, doDelay):
+  def compose_and_execute(self):
     with HardwareCommChannel(self.runstate) as picocc:
       self.emit_status("Connecting to camera and acquiring info", logToFile=False, logToProgress=True, options={'deployrunning':True, 'count':0})
       with Camera() as camera:
@@ -91,7 +91,7 @@ class PicoExecuteCompose(PivExecuteCompose):
           self.emit_status(camera.status, logToFile=False, logToProgress=True, options={'deploying':False,'deployrunning':False})
           return
         
-        if doDelay:
+        if self.runstate.get_testScanNumber() == 0:
           self.delay_start()
 
         self.pico_send_configuration(picocc)

@@ -19,6 +19,8 @@ class PivExecuteCompose:
 
     def __init__(self, runstate):
         global dataPathRoot
+
+        self.dataPath = dataPathRoot
         
         configuration = {}
         with open('../configuration/configuration.json') as f:
@@ -28,9 +30,13 @@ class PivExecuteCompose:
         self.runstate = runstate
 
         if self.runstate.test:
-            dataPathRoot = dataPathRoot + 'test/'
-            shutil.rmtree(dataPathRoot, ignore_errors=True)
-            os.makedirs(dataPathRoot)
+            self.dataPath = dataPathRoot + 'test/'
+
+            # All subsequent test scans will go in the test folder, start fresh for the first one.
+            if self.runstate.get_testScanNumber() == 0:
+                shutil.rmtree(self.dataPath, ignore_errors=True)
+
+            os.makedirs(self.dataPath, exist_ok=True)
 
         self.pivFilePath = dataPathRoot + 'default/'
 
@@ -82,7 +88,7 @@ class PivExecuteCompose:
 
         utcDateTime = time.gmtime()
         data_folder = "{year:04d}-{month:02d}-{day:02d}_{hour:02d}.{minute:02d}.{second:02d}".format(year=utcDateTime.tm_year, month=utcDateTime.tm_mon, day=utcDateTime.tm_mday, hour=utcDateTime.tm_hour, minute=utcDateTime.tm_min, second=utcDateTime.tm_sec)
-        self.pivFilePath = dataPathRoot + data_folder + '/'
+        self.pivFilePath = self.dataPath + data_folder + '/'
 
         if not os.path.exists(self.pivFilePath):
             os.makedirs(self.pivFilePath)
