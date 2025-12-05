@@ -12,8 +12,6 @@ result = { 'success': False, 'message': 'Unknown error' }
 
 
 class PicoExecuteCompose(PivExecuteCompose):
-  samplePeriod = 0.1   # Status reads in seconds
-
   def __init__(self, runstate):
     super().__init__(runstate)
 
@@ -110,23 +108,17 @@ class PicoExecuteCompose(PivExecuteCompose):
           outfile.write(json.dumps(runsettings, indent=4))
 
         self.pico_send_command(picocc, 'Start')
-        
-        while self.runstate.is_running():
-          start_timestamp = time.time()
 
+        image_successful = True
+        while image_successful:
+            image_successful = camera.acquire_image(self.pivFilePath, convert=self.runstate.is_test())
+
+        print(f'Camera acquired {camera.imagenumber} images')
+
+        while self.runstate.is_running() and camera.valid:
           status = self.pico_send_command(picocc, 'GetStatus')
-          running = status['IsRunning'] == 1
-          self.emit_status(f"Configuration '{self.runstate.configuration['Name']}' executing", logToProgress=True, options={'deploying':running, 'deployrunning':running, 'count':status['CycleCount']})
-          end_timestamp = time.time()
-          duration = end_timestamp - start_timestamp
-          while self.runstate.is_running() and duration < PicoExecuteCompose.samplePeriod:
-            #sleepTime = 0.1 if PicoExecuteCompose.samplePeriod - duration >= 0.1 else PicoExecuteCompose.samplePeriod - duration
-            #time.sleep(sleepTime)
-            camera.acquire_image(self.pivFilePath, convert=self.runstate.is_test())
-            duration += 0.1
-
-            if status['IsRunning'] != 1:
-              self.stop_deployment()
+          if status['IsRunning'] != 1:
+            self.stop_deployment()
 
         self.pico_send_command(picocc, 'Stop')
 
@@ -134,6 +126,8 @@ class PicoExecuteCompose(PivExecuteCompose):
         images_remain = True
         while images_remain:
           images_remain = camera.acquire_image(self.pivFilePath, convert=self.runstate.is_test())
+
+        print(f'Camera post-acquired {camera.imagenumber} images')
 
         camera.end_acquisition_mode()
         self.camera_reset_configuration(camera)
