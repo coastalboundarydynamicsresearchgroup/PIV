@@ -373,7 +373,7 @@ class Camera:
       result = True
 
       #  Retrieve next received image
-      image_result = self.cam.GetNextImage(10)
+      image_result = self.cam.GetNextImage(100)
 
       #  Ensure image completion
       if image_result.IsIncomplete():
