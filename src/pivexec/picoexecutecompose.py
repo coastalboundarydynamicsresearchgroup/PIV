@@ -12,8 +12,6 @@ result = { 'success': False, 'message': 'Unknown error' }
 
 
 class PicoExecuteCompose(PivExecuteCompose):
-  samplePeriod = 0.1   # Status reads in seconds
-
   def __init__(self, runstate):
     super().__init__(runstate)
 
@@ -49,8 +47,6 @@ class PicoExecuteCompose(PivExecuteCompose):
   def pico_send_configuration(self, picocc):
     configuration = self.runstate.configuration
     configuration['Command'] = 'Configure'
-    if 'Debug' in configuration and configuration['Debug']:
-       configuration["DebugMultiplier"] = 1000
     result = self.transact_pico(picocc, configuration)
     self.emit_status('Pico configuration sent', logToProgress=True, options={'deployrunning':True})
     return result
@@ -93,7 +89,8 @@ class PicoExecuteCompose(PivExecuteCompose):
           self.emit_status(camera.status, logToFile=False, logToProgress=True, options={'deploying':False,'deployrunning':False})
           return
         
-        self.delay_start()
+        if self.runstate.get_testScanNumber() == 0:
+          self.delay_start()
 
         self.pico_send_configuration(picocc)
         self.camera_configure(camera)
@@ -111,30 +108,26 @@ class PicoExecuteCompose(PivExecuteCompose):
           outfile.write(json.dumps(runsettings, indent=4))
 
         self.pico_send_command(picocc, 'Start')
-        
-        while self.runstate.is_running():
-          start_timestamp = time.time()
 
+        image_successful = True
+        while image_successful:
+            image_successful = camera.acquire_image(self.pivFilePath, convert=self.runstate.is_test())
+
+        print(f'Camera acquired {camera.imagenumber} images')
+
+        while self.runstate.is_running() and camera.valid:
           status = self.pico_send_command(picocc, 'GetStatus')
-          running = status['IsRunning'] == 1
-          self.emit_status(f"Configuration '{self.runstate.configuration['Name']}' executing", logToProgress=True, options={'deploying':running, 'deployrunning':running, 'count':status['CycleCount']})
-          end_timestamp = time.time()
-          duration = end_timestamp - start_timestamp
-          while self.runstate.is_running() and duration < PicoExecuteCompose.samplePeriod:
-            #sleepTime = 0.1 if PicoExecuteCompose.samplePeriod - duration >= 0.1 else PicoExecuteCompose.samplePeriod - duration
-            #time.sleep(sleepTime)
-            camera.acquire_image(self.pivFilePath)
-            duration += 0.1
-
-            if status['IsRunning'] != 1:
-              self.stop_deployment()
+          if status['IsRunning'] != 1:
+            self.stop_deployment()
 
         self.pico_send_command(picocc, 'Stop')
 
         # Clean any remaining images out of the camera buffer.
         images_remain = True
         while images_remain:
-          images_remain = camera.acquire_image(self.pivFilePath)
+          images_remain = camera.acquire_image(self.pivFilePath, convert=self.runstate.is_test())
+
+        print(f'Camera post-acquired {camera.imagenumber} images')
 
         camera.end_acquisition_mode()
         self.camera_reset_configuration(camera)

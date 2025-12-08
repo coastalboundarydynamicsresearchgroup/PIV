@@ -1,19 +1,123 @@
-# PIV Controller using Orange Pi 3 Pro
+# PIV Controller using Orange Pi 5 Pro
 
 ## Boot the OrangePi
 - Burn the file `Orangepi5pro_1.0.6_ubuntu_jammy_desktop_xfce_linux6.1.43.img` into a micro SD card using BalenaEtcher or similar.  The card should be at least 32 GB.
 - Insert the SD card into the SBC, plus monitor, keyboard, mouse.  Power up with USB C supply.  The SBC should boot within about 10 seconds, without pressing the power button.
-- When logged in (default user os orangepi), create the `piv` user on a console with
+- Optional, but recommended: Install an eMMC module on the back and install a new copy of Linux on it.  The eMMC module is larger, faster, and more reliable than the micro SD card.
+  - Install the eMMC module on the back of the OrangePi 5 Pro. See the details in section 2.5.1 of the [manual](./OrangePi_5_Pro_RK3588S_User%20Manual_v1.3-1.pdf), on page 53. Press the two connectors firmly until they snap into place.  **BE SURE TO ORIENT THE MODULE CORRECTLY AS INDICATED BY THE CORNER CUTOUT IN THE SILKSCREEN OUTLINE**
+  - Copy the same Ubuntu image file onto the OrangePi 5 Pro using
+  `$ scp Orangepi5pro_1.0.6_ubuntu_jammy_desktop_xfce_linux6.1.43.img orangepi@<IP address>:/home/orangepi` # On your host computer.  
+  Alternatively, put the file on a USB drive and copy it from there to the `/home/orangepi` directory.
+  - The following steps are covered in more detail in section 2.5.2 of the [manual](./OrangePi_5_Pro_RK3588S_User%20Manual_v1.3-1.pdf), starting on page 52.  For the following steps, log into OrantePi 5 Pro as the `orangepi` user and open a console.
+  ![](./orangepi5pro_lsblk_emmc.png)
+  - Determine the folder name of the eMMC module.  This example shows the use of the `lsblk` command when the system is booted from the micro SD card.  The goal is to find the name, in this case `mmcblk0`, of the eMMC device.  A couple of hints here give it away
+    - `mmcblk0` will have no partitions when first plugged in.  
+    - Here we have two partitions, but they are do not show any mountpoints.  mmcblk1 is the micro SD card, and has partitiions that are mounted.  
+    - `mmcblk0` shows space slightly less than the 250 GB (233 GB) that the eMMC module is known to be.  Drives never show their full capacity available for storage due to overhead.  
+
+    All devices are represented as folders in the `/dev` directory.  So from the above information, we conclude that the micro SD card is `/dev/mmcblk1` and the eMMC drive is `/dev/mmcblk0`.  We will use this information in the next step.
+  
+
+  - Clear the eMMC module and copy the Ubuntu 22.04 image to it.  These steps assume the Ubuntu image is in `/home/orangepi` (the orangepi user root folder), you are using a console logged in as the `orangepi` user, the micro SD card is located at `/dev/mmcblk1`, and the eMMC module is located at `/dev/mmcblk0`, per the steps above.  **THIS IS ONLY AN EXAMPLE, REMEMBER TO CHECK THE LOCATIONS OF THE TWO DRIVES**
+    - `$ sudo dd bs=1M if=/dev/zero of=/dev/mmcblk0 count=233000 status=progress conv=sync`  
+      `$ sudo sync`  
+      `$ sudo dd bs=1M if=Orangepi5pro_1.0.6_ubuntu_jammy_desktop_xfce_linux6.1.43.img of=/dev/mmcblk0 status=progress conv=sync`  
+      `$ sudo sync`  
+
+      NOTE: The `count=233000` in the first command is derived from the size of the eMMC module, which is 256 GB, or 256,000 * 1 MB.  It is 233 rather than 256 because the `sudo fdisk -l` command lists the drive's capacity as 232.96 GiB.  Using the specified capacity of `count=256000` should work as well.
+
+  - Power off the Orangepi 5 Pro and remove the micros SD card.  Short-press the power button and confirm that Ubuntu boots directly from the eMMC module.
+
+ - Bring the Ubuntu distro up to date with
+   - `sudo apt update`
+
+The remainder of the steps below will work correctly whether you are booting from the eMMC module or micro SD card.
+
+## Create the PIV user
+- When logged in (default user is `orangepi`), create the `piv` user on a console with
 ```
 $ sudo adduser piv
 [sudo] password for orangepi: orangepi
 . . .
 New password: piv
 ```
-- Add user `piv` to the sudo group: `$ sudo adduser piv sudo`
-- Change the default login at startup to the `piv` user: `$ sudo auto_login_cli.sh piv`
+- Add user `piv` to the `sudo` group: `$ sudo adduser piv sudo`  
+- Add user `piv` to the `tty` group: `$ sudo adduser piv tty`  
+- Add user `piv` to the `dialout` group: `$ sudo adduser piv dialout`  
+- Add user `piv` to the `dialout` group: `$ sudo adduser piv docker`  
+- Change the default login at startup to the `piv` user: `$ sudo desktop_login.sh piv`  
 
-- Log out of user `orangepi` and log in to user `piv`.  This will be the working directory from now on.
+- Reboot.  Confirm that the system automatically logs in to user `piv`.  This will be the working user and `/home/piv` will be the working   directory from now on.
+
+## Install the NVMe SSD M.2 drive
+### Format the NVMe SSD storage and make a filesystem
+
+Fresh out of the box, the M.2 NVMe drive will be initialized, with no partitions.  Our first job is to create a partition.  If you are re-using an M.2 drive for some reason, this step may already be done.
+
+Make the partition on the M.2 NVMe drive. 
+
+Execute:
+`lsblk`
+
+
+![lsblk command](lsblkNVMeSSD.jpg)
+
+Most likely, your NVMe drive will show up like mine: `/dev/nvme0n1`
+
+To make the partition, execute (using the drive path found from lsblk):
+
+`sudo fdisk /dev/nvme0n1`
+- Choose `n` to create a new partition.
+- At the prompt, choose `p` for a primary partition.
+- Select `1`.
+- Other questions will follow, just use defaults.
+- When back at the main command, choose `w` to write the data to the disk.
+
+Add a filesystem to the partition.  I am choosing `ntfs` since it will provide portability to directly read and write to the SSD if it is removed from this SBC and put into a Windows computer.  Other formats might be preferrable in a strictly-linux environment.
+
+Use lsblk again to see the name of the partition you just created.  It is probably named `/dev/nvme0n1p1`.  Make the filesystem with this command.
+
+`sudo mkfs -t ntfs /dev/nvme0n1p1`
+
+
+### Permanently mount the NVMe M.2 SSD
+
+- Log in as `piv` (password `piv`).
+- Create a mount point.  This will be used in `fstab` below, and will be where you see the data for this drive:
+
+`sudo mkdir /pivdata`  
+`sudo chown piv:piv /pivdata`  
+
+- At the command prompt, enter:
+
+`sudo blkid`
+
+![blkid command](blkid_command.png)
+
+- Look for the partition you created above, probably `/dev/nvme0n1p1` or `/dev/nvme0n1p2`.  Somewhere in the line for this partition, should be `UUID=”32BA153FBA1500D1”`.  Your UUID will of course be different, but will be some long string of Hex digits.  Highlight the UUID (less quotation marks) and copy.
+
+- Now, edit `/etc/fstab`.  To do this, enter:
+
+`cd /etc`
+
+`sudo nano fstab`
+
+At the bottom, enter a line like
+
+`UUID=32BA153FBA1500D1 /pivdata       ntfs-3g   auto,users,uid=1000,gid=1000,dmask=027,fmask=137,utf8  0  0`
+
+- Note that the string of hex digits following ‘UUID=’ must be the UUID you captured from the blkid command above.
+- Exit the editor, saving the file, and test it with
+
+`sudo mount -a`
+
+- Issuing a new lsblk command should show the mount point `/pivdata` for the partition you mounted, and you should see a file or two at `/pivdata`.
+
+![lsblk command](lsblk_command.png)
+  
+-Try creating a subfolder and writing a file.
+
+
 
 ## Install software
 - **Visual Studio Code**
@@ -24,7 +128,7 @@ New password: piv
   - In a console, `$ mkdir github` and `$ cd github`.
   - Clone the repository with `$ git clone https://github.com/coastalboundarydynamicsresearchgroup/PIV.git`.
 - **FLIR software (Spinnaker SDK, SpinView)**
-  - [Where to get the files from?]  Obtain the file `spinnaker-4.2.0.46-arm64-22.04-pkg.tar.gz`.  Extract its contents, then `$ cd spinnaker-4.2.0.46-arm64`.
+  - [Where to get the files from?]  Obtain the file `spinnaker-4.2.0.46-arm64-22.04-pkg.tar.gz`.  Extract its contents with `tar -xzvf <filename>`, then `$ cd spinnaker-4.2.0.46-arm64`.
   - Follow the instructions in the READM.md file for Ubuntu 22.04.  This should boil down to two steps:
     1. `$ sudo apt-get install libusb-1.0-0 qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools`
     2. `sudo sh install_spinnaker_arm.sh`
@@ -32,9 +136,11 @@ New password: piv
     The second script will install the whole spinnaker package, asking for permission to install various options.  Take the default 'Y' answer for all but the last question about a giga camera.
 
 - **FLIR Python toolkit**
-  - [Where to get the file from?]  Obtain the file `spinnaker_python-4.2.0.46-cp310-cp310-linux_aarch64-22.04.tar.gz`.  Extract its contents, then `$ cd spinnaker_python-4.2.0.46-cp310-cp310-linux_aarch64-22.04`.
+  - [Where to get the file from?]  Obtain the file `spinnaker_python-4.2.0.46-cp310-cp310-linux_aarch64-22.04.tar.gz`.  Extract its contents with `tar -xzvf <filename>, then `$ cd spinnaker_python-4.2.0.46-cp310-cp310-linux_aarch64-22.04`.
   - Follow the instructions in the README.md file for Ubuntu 22.04.  **Be sure to run `sudo apt update` before executing the instructions**.
+  - You may need to install pip for python3 using `sudo apt install python3-pip`.
 - **Docker**
   This image of Ubuntu 22.04 comes with Docker pre-installed, so no action is needed here.
 
+- Add user `piv` to the `docker` group: `$ sudo adduser piv docker`
   

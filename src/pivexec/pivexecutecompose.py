@@ -1,4 +1,5 @@
 import os
+import shutil
 import time
 import math
 import json
@@ -17,13 +18,28 @@ class PivExecuteCompose:
     baseBackendUrl = ''
 
     def __init__(self, runstate):
+        global dataPathRoot
+
+        self.dataPath = dataPathRoot
+        
         configuration = {}
         with open('../configuration/configuration.json') as f:
             configuration = json.load(f)
         PivExecuteCompose.baseBackendUrl = 'http://' + configuration['services']['backend']['host'] + ':' + configuration['services']['backend']['port']
-        self.pivFilePath = dataPathRoot + '/default/'
 
         self.runstate = runstate
+
+        if self.runstate.test:
+            self.dataPath = dataPathRoot + 'test/'
+
+            # All subsequent test scans will go in the test folder, start fresh for the first one.
+            if self.runstate.get_testScanNumber() == 0:
+                shutil.rmtree(self.dataPath, ignore_errors=True)
+
+            os.makedirs(self.dataPath, exist_ok=True)
+
+        self.pivFilePath = dataPathRoot + 'default/'
+
 
         self.makeNewDataFolder()
 
@@ -53,7 +69,7 @@ class PivExecuteCompose:
             timestamp = "{year:04d}-{month:02d}-{day:02d} {hour:02d}:{minute:02d}:{second:02d}".format(year=utcDateTime.tm_year, month=utcDateTime.tm_mon, day=utcDateTime.tm_mday, hour=utcDateTime.tm_hour, minute=utcDateTime.tm_min, second=utcDateTime.tm_sec)
 
             if logToFile:
-                if self.runstate.debug:
+                if self.runstate.test:
                     print(timestamp + ': ' + message)
 
                 with open(logFile, "a") as outfile:
@@ -70,9 +86,14 @@ class PivExecuteCompose:
         global pivFilePath
         global logFile
 
-        utcDateTime = time.gmtime()
-        data_folder = "{year:04d}-{month:02d}-{day:02d}_{hour:02d}.{minute:02d}.{second:02d}".format(year=utcDateTime.tm_year, month=utcDateTime.tm_mon, day=utcDateTime.tm_mday, hour=utcDateTime.tm_hour, minute=utcDateTime.tm_min, second=utcDateTime.tm_sec)
-        self.pivFilePath = dataPathRoot + data_folder + '/'
+        data_folder = 'default'
+        if self.runstate.is_test():
+            data_folder = self.runstate.get_configurationName()
+        else:
+            utcDateTime = time.gmtime()
+            data_folder = "{year:04d}-{month:02d}-{day:02d}_{hour:02d}.{minute:02d}.{second:02d}".format(year=utcDateTime.tm_year, month=utcDateTime.tm_mon, day=utcDateTime.tm_mday, hour=utcDateTime.tm_hour, minute=utcDateTime.tm_min, second=utcDateTime.tm_sec)
+
+        self.pivFilePath = self.dataPath + data_folder + '/'
 
         if not os.path.exists(self.pivFilePath):
             os.makedirs(self.pivFilePath)
