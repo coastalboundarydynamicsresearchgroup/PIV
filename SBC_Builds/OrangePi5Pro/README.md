@@ -142,5 +142,6 @@ At the bottom, enter a line like
 - **Docker**
   This image of Ubuntu 22.04 comes with Docker pre-installed, so no action is needed here.
 
-- Add user `piv` to the `docker` group: `$ sudo adduser piv docker`
+  - Add user `piv` to the `docker` group: `$ sudo adduser piv docker`
+  - Ensure the docker service starts at boot: `$ sudo systemctl enable docker`
   
