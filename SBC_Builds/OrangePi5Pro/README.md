@@ -73,11 +73,11 @@ To make the partition, execute (using the drive path found from lsblk):
 - Other questions will follow, just use defaults.
 - When back at the main command, choose `w` to write the data to the disk.
 
-Add a filesystem to the partition.  I am choosing `ntfs` since it will provide portability to directly read and write to the SSD if it is removed from this SBC and put into a Windows computer.  Other formats might be preferrable in a strictly-linux environment.
+Add a filesystem to the partition.  I initially chose `ntfs` since to provide portability to directly read and write to the SSD if it is removed from this SBC and put into a Windows computer.  This turned out to be unusably slow when saving hundreds of RAW image files per second for a sustained period.  I have found the best filesystem is `ext4`.
 
 Use lsblk again to see the name of the partition you just created.  It is probably named `/dev/nvme0n1p1`.  Make the filesystem with this command.
 
-`sudo mkfs -t ntfs /dev/nvme0n1p1`
+`sudo mkfs -t ext4 /dev/nvme0n1p1`
 
 
 ### Permanently mount the NVMe M.2 SSD
@@ -94,7 +94,7 @@ Use lsblk again to see the name of the partition you just created.  It is probab
 
 ![blkid command](blkid_command.png)
 
-- Look for the partition you created above, probably `/dev/nvme0n1p1` or `/dev/nvme0n1p2`.  Somewhere in the line for this partition, should be `UUID=”32BA153FBA1500D1”`.  Your UUID will of course be different, but will be some long string of Hex digits.  Highlight the UUID (less quotation marks) and copy.
+- Look for the partition you created above, probably `/dev/nvme0n1p1` or `/dev/nvme0n1p2`.  Somewhere in the line for this partition, should be `UUID=”535de3fa-c1b3-4a11-9089-75d5f46a0ce2”`.  Your UUID will of course be different, but will be some long string of Hex digits.  Highlight the UUID (less quotation marks) and copy.
 
 - Now, edit `/etc/fstab`.  To do this, enter:
 
@@ -104,7 +104,7 @@ Use lsblk again to see the name of the partition you just created.  It is probab
 
 At the bottom, enter a line like
 
-`UUID=32BA153FBA1500D1 /pivdata       ntfs-3g   auto,users,uid=1000,gid=1000,dmask=027,fmask=137,utf8  0  0`
+`UUID=535de3fa-c1b3-4a11-9089-75d5f46a0ce2 /pivdata       ext4   defaults  0  0`
 
 - Note that the string of hex digits following ‘UUID=’ must be the UUID you captured from the blkid command above.
 - Exit the editor, saving the file, and test it with
