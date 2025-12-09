@@ -82,3 +82,7 @@ class ImageConverter:
 
     for folder in folders:
       self.convert_all_images(dataPathRoot + folder + '/')
+
+if __name__ == "__main__":
+  converter = ImageConverter()
+  converter.convert_all_runs()
