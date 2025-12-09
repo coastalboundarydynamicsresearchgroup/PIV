@@ -1,6 +1,6 @@
 import './App.css';
 
-const PivConfigButtons = ({deploying, deployrunning, getStateFunc, onCreateFunc, onSaveFunc, onDeleteFunc, onDeployFunc, onDownloadFunc, onTestClicked}) => {
+const PivConfigButtons = ({deploying, deployrunning, getStateFunc, onCreateFunc, onSaveFunc, onDeleteFunc, OnExecuteFunc, onDownloadFunc, onTestFunc}) => {
 
   const GetSelectedConfiguration = () => {
     var selectedConfiguration = -1;
@@ -24,11 +24,11 @@ const PivConfigButtons = ({deploying, deployrunning, getStateFunc, onCreateFunc,
     return GetSelectedConfiguration() >= 0 && !getStateFunc('nametouched');
   }
 
-  const DeployButtonEnabled = () => {
+  const ExecuteAndTestButtonEnabled = () => {
     return GetSelectedConfiguration() >= 0 && !getStateFunc('nametouched') && !getStateFunc('valuetouched');
   }
 
-  const DeployButtonText = () => {
+  const ExecuteButtonText = () => {
     const deployFlag = !deploying && !deployrunning;
     return deployFlag ? "Execute" : "Stop";
   }
@@ -57,10 +57,10 @@ const PivConfigButtons = ({deploying, deployrunning, getStateFunc, onCreateFunc,
       </div>
 
       <div className="configuration-buttonrow">
-        <button type="button" id="deploy-button" disabled={!DeployButtonEnabled()} onClick={onDeployFunc}>
-            { DeployButtonText() }
+        <button type="button" id="deploy-button" disabled={!ExecuteAndTestButtonEnabled()} onClick={OnExecuteFunc}>
+            { ExecuteButtonText() }
         </button>
-        <button type="button" id="test-button" disabled={!DeployButtonEnabled()} onClick={onTestClicked}>
+        <button type="button" id="test-button" disabled={!ExecuteAndTestButtonEnabled()} onClick={onTestFunc}>
             { TestButtonText() }
         </button>
       </div>

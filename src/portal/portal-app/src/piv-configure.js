@@ -157,7 +157,7 @@ const PivConfigure = ({getState, setState, deploying, deployrunning}) => {
           ))}
         </select>
       </div>
-      <PivConfigButtons deploying={deploying} deployrunning={deployrunning} getStateFunc={getState} onCreateFunc={onCreate} onSaveFunc={onSave} onDeleteFunc={onDelete} OnExecuteFunc={OnExecute} onDownloadFunc={onDownload} onTestClicked={onTest} />
+      <PivConfigButtons deploying={deploying} deployrunning={deployrunning} getStateFunc={getState} onCreateFunc={onCreate} onSaveFunc={onSave} onDeleteFunc={onDelete} OnExecuteFunc={OnExecute} onDownloadFunc={onDownload} onTestFunc={onTest} />
     </div>
   )
 }
