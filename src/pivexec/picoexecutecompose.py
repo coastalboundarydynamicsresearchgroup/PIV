@@ -84,7 +84,7 @@ class PicoExecuteCompose(PivExecuteCompose):
   def compose_and_execute(self):
     with HardwareCommChannel(self.runstate) as picocc:
       self.emit_status("Connecting to camera and acquiring info", logToFile=False, logToProgress=True, options={'deployrunning':True, 'count':0})
-      with Camera() as camera:
+      with Camera(self.runstate) as camera:
         if not camera.valid:
           self.emit_status(camera.status, logToFile=False, logToProgress=True, options={'deploying':False,'deployrunning':False})
           return

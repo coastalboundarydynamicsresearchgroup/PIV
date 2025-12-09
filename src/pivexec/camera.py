@@ -4,7 +4,14 @@ import sys
 
 
 class Camera:
-  def __init__(self):
+  def __init__(self, runstate):
+    self.runstate = runstate
+
+    self.framerate = 100  # Configured framerate in milliseconds
+    configuration = self.runstate.get_configuration()
+    if 'FrameRate' in configuration:
+      self.framerate = configuration['FrameRate']
+
     self.cam = None
     self.caminfo = {}
     self.cam_list = None
@@ -373,7 +380,7 @@ class Camera:
       result = True
 
       #  Retrieve next received image
-      image_result = self.cam.GetNextImage(100)
+      image_result = self.cam.GetNextImage(self.framerate)
 
       #  Ensure image completion
       if image_result.IsIncomplete():
