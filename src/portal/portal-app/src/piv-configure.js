@@ -7,7 +7,7 @@ import PivConfigButtons from './piv-configbuttons'
 const baseBackendUrl = 'http://' + configuration.services.backend.host + ':' + configuration.services.backend.port;
 
 
-const PivConfigure = ({getState, setState, deploying, deployrunning, onTestClicked, onPingData, test}) => {
+const PivConfigure = ({getState, setState, deploying, deployrunning}) => {
   const [configurations, setConfigurations] = useState([]);
   const [configurationChanged, setConfigurationChanged] = useState(0);
   const [selectedConfiguration, setSelectedConfiguration] = useState(0);
@@ -58,9 +58,14 @@ const PivConfigure = ({getState, setState, deploying, deployrunning, onTestClick
     });
   }
 
-  const onDeploy = () => {
-    console.log(`Deploying configuration`);
-    GetDeployResponse();
+  const OnExecute = () => {
+    console.log(`Executing configuration`);
+    GetExecuteOrTestResponse(false);
+  }
+
+  const onTest = () => {
+    console.log(`Testing configuration`);
+    GetExecuteOrTestResponse(true);
   }
 
   const onDownload = () => {
@@ -86,7 +91,7 @@ const PivConfigure = ({getState, setState, deploying, deployrunning, onTestClick
     });
   }
 
-  const GetDeployResponse = () => {
+  const GetExecuteOrTestResponse = (test) => {
     const messages = document.getElementById('messages');
 
     var init = {
@@ -104,7 +109,13 @@ const PivConfigure = ({getState, setState, deploying, deployrunning, onTestClick
     }
   
     const configurationName = document.getElementById("newconfiguration").value;
-    const commandUrl = deployFlag ? '/piv/execute/' + configurationName : '/piv/stop'
+    var commandUrl = '';
+    if (test) {
+      commandUrl = deployFlag ? '/piv/test/' + configurationName : '/piv/stoptest'
+    } else {
+      commandUrl = deployFlag ? '/piv/execute/' + configurationName : '/piv/stop'
+    }
+
     fetch(baseBackendUrl + commandUrl, init)
     .then(data => data.json())
     .then(response => {
@@ -146,7 +157,7 @@ const PivConfigure = ({getState, setState, deploying, deployrunning, onTestClick
           ))}
         </select>
       </div>
-      <PivConfigButtons deploying={deploying} deployrunning={deployrunning} getStateFunc={getState} onCreateFunc={onCreate} onSaveFunc={onSave} onDeleteFunc={onDelete} onDeployFunc={onDeploy} onDownloadFunc={onDownload} onTestClicked={onTestClicked} test={test} />
+      <PivConfigButtons deploying={deploying} deployrunning={deployrunning} getStateFunc={getState} onCreateFunc={onCreate} onSaveFunc={onSave} onDeleteFunc={onDelete} OnExecuteFunc={OnExecute} onDownloadFunc={onDownload} onTestClicked={onTest} />
     </div>
   )
 }

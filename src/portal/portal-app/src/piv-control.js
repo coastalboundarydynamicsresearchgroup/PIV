@@ -7,8 +7,6 @@ import './App.css';
 const PivControl = () => {
     const [configNameTouched, setConfigNameTouched] = useState(false);
     const [configValueTouched, setConfigValueTouched] = useState(false);
-    const [test, setTest] = useState(false);
-    const [testdata, setTestdata] = useState("");
 
     const [deploying, setDeploying] = useState(false);
     const [deployrunning, setDeployrunning] = useState(false);
@@ -84,19 +82,6 @@ const PivControl = () => {
         }
     }
 
-    const onTestClicked = () => {
-      if (test) {
-          setTest(false);
-      } else {
-          setTest(true);
-      }
-    }
-
-    const onPivTestData = (testreturndata) => {
-        console.log(`Setting state variable with test data ${testreturndata}`);
-        setTestdata(testreturndata);
-    }
-
     return (
         <section className="fullpane">
         <div className="connectbar">
@@ -106,8 +91,8 @@ const PivControl = () => {
             <div className="messages">
                 <div className="configurationsLabel">Select a configuration, edit, and deploy</div>
                 <div className="configurations">
-                    <PivConfigure getState={getState} setState={setState} deploying={deploying} deployrunning={deployrunning} onTestClicked={onTestClicked} onPingData={onPivTestData} test={test} />
-                    <PivConfigBox  onChangeFunc={() => setState('valuetouched', true)} deploying={deploying} deployrunning={deployrunning} pingdata={testdata} test={test} />
+                    <PivConfigure getState={getState} setState={setState} deploying={deploying} deployrunning={deployrunning} />
+                    <PivConfigBox  onChangeFunc={() => setState('valuetouched', true)} deploying={deploying} deployrunning={deployrunning} />
                 </div>
                 <textarea name="messages" id="messages" cols="120" rows="8" readOnly></textarea>
                 <textarea name="status" id="status" cols="120" rows="5" readOnly></textarea>
