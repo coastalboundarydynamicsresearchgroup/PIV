@@ -9,7 +9,7 @@ const archiver = require('archiver');
 const inprogress = singleton.getInstance();
 const commonKey = singleton.getCommonKey();
 
-
+// Experimantal code to stream a zip file of PIV data.  Delete if not used.
 //
 // Handle the web API route used to request all acquired PIV data
 // from the backend. This is used to create a zip file of all
