@@ -78,7 +78,7 @@ const PivDatasets = () => {
     fetch(baseBackendUrl + '/dataset/' + datasetName, init)
     .then(data => data.json())
     .then(response => {
-//      if (response.status === 201) {
+      if (response.status === 201) {
         messages.value += 'Started dataset download with status ' + response.status + '\n';
         const zippedFilePath = `/piv/archive/${response.filename}.zip`;
 
@@ -86,13 +86,11 @@ const PivDatasets = () => {
         const fileName = response.filename + '.zip';
         const aTag = document.createElement("a");
         aTag.href = "/piv/archive/" + fileName;         // Root '/' is the nodejs /public folder
-        aTag.setAttribute("download", "/piv/archive/" + fileName);
+        aTag.setAttribute("download", fileName);
         document.body.appendChild(aTag);
         aTag.click();
         aTag.remove();
-
-        // Optional: clean up the file after the stream closes if it was temporary
-        //fs.unlinkSync(zippedFilePath); // Delete the file after sending
+      }
       onDoneHandler();
     });
   }

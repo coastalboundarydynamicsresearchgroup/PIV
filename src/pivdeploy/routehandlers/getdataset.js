@@ -23,10 +23,10 @@ var getDataset = function(req, res) {
       }
       res.status(error.code).send(error.message)
     } else {
-      const response = JSON.parse(stdout);
+      var response = JSON.parse(stdout);
+      response.status = 201;
       inprogress[commonKey].status = `PIV data in zipped in file ${response.filename}`;
       res.set('Access-Control-Allow-Origin', '*');
-      res.status(201);
       res.json(response);
     }
   });
