@@ -24,12 +24,39 @@ const PivDatasets = () => {
     });
   }, [datasetsChanged, selectedDataset]);
 
+
   const onDelete = () => {
     DeleteDataset(() => {
       setSelectedDataset(0);
       setdatasetsChanged(datasetsChanged + 1);
     });
   }
+
+  const DeleteDataset = (onDoneHandler) => {
+    const messages = document.getElementById('messages');
+  
+    var init = {
+      method: 'DELETE',
+      mode: 'cors',
+      headers: {
+        'Content-type': 'application/json'
+      }
+    };
+    
+    const datasetName = document.getElementById("datasetselectlist").value;
+    fetch(baseBackendUrl + '/dataset/' + datasetName, init)
+    .then(data => data.json())
+    .then(response => {
+      if (response.status === 201) {
+        messages.value += 'Deleted dataset with status ' + response.status + '\n';
+      }
+      else {
+        messages.value += 'Error deleting dataset with status ' + response.status + '\n';
+      }
+      onDoneHandler();
+    });
+  }
+  
 
   const OnDownload = () => {
     DownloadDataset(() => {
@@ -60,49 +87,17 @@ const PivDatasets = () => {
         const aTag = document.createElement("a");
         aTag.href = "/piv/archive/" + fileName;         // Root '/' is the nodejs /public folder
         aTag.setAttribute("download", "/piv/archive/" + fileName);
-        //aTag.href = baseBackendUrl + "/piv/archive/" + fileName;         // Root '/' is the nodejs /public folder
-        //aTag.setAttribute("download", baseBackendUrl + "/piv/archive/" + fileName);
         document.body.appendChild(aTag);
         aTag.click();
         aTag.remove();
 
         // Optional: clean up the file after the stream closes if it was temporary
-        //readStream.on('close', () => {
-        //  fs.unlinkSync(zippedFilePath); // Delete the file after sending
-        //});
+        //fs.unlinkSync(zippedFilePath); // Delete the file after sending
       onDoneHandler();
     });
   }
   
 
-
-  const DeleteDataset = (onDoneHandler) => {
-    const messages = document.getElementById('messages');
-  
-    var init = {
-      method: 'DELETE',
-      mode: 'cors',
-      headers: {
-        'Content-type': 'application/json'
-      }
-    };
-    
-    const datasetName = document.getElementById("datasetselectlist").value;
-    fetch(baseBackendUrl + '/dataset/' + datasetName, init)
-    .then(data => data.json())
-    .then(response => {
-      if (response.status === 201) {
-        messages.value += 'Deleted dataset with status ' + response.status + '\n';
-      }
-      else {
-        messages.value += 'Error deleting dataset with status ' + response.status + '\n';
-      }
-      onDoneHandler();
-    });
-  }
-  
-  
-  var configurations =  ['10ms', '100ms', '1s', '10s', '1min', '10min', '1hour', '1day'];
 
   return (
     <div className="configuration-buttons">
