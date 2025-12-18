@@ -4,7 +4,7 @@ import 'reactjs-popup/dist/index.css';
 import PivDatasets from './piv-datasets';
 
 
-const PivConfigButtons = ({deploying, deployrunning, getStateFunc, onCreateFunc, onSaveFunc, onDeleteFunc, OnExecuteFunc, onDownloadFunc, onTestFunc}) => {
+const PivConfigButtons = ({deploying, deployrunning, getStateFunc, onCreateFunc, onSaveFunc, onDeleteFunc, OnExecuteFunc, onTestFunc}) => {
 
   const GetSelectedConfiguration = () => {
     var selectedConfiguration = -1;
@@ -42,8 +42,6 @@ const PivConfigButtons = ({deploying, deployrunning, getStateFunc, onCreateFunc,
     return deployFlag ? "Test" : "Stop";
   }
 
-  var configurations =  ['10ms', '100ms', '1s', '10s', '1min', '10min', '1hour', '1day'];
-
   return (
     <div className="configuration-buttons">
       <div className="configuration-buttonrow">
@@ -73,7 +71,7 @@ const PivConfigButtons = ({deploying, deployrunning, getStateFunc, onCreateFunc,
 
       <div className="configuration-buttonrow">
         <Popup trigger={
-          <button type="button" id="download-button" onClick={onDownloadFunc}>
+          <button type="button" id="download-button" >
               Manage Datasets...
           </button>}
           position = "top center" >

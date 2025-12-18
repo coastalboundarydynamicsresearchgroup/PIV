@@ -68,30 +68,6 @@ const PivConfigure = ({getState, setState, deploying, deployrunning}) => {
     GetExecuteOrTestResponse(true);
   }
 
-  const onDownload = () => {
-    var init = {
-      method: 'GET',
-      mode: 'cors',
-      headers: {
-        'Content-type': 'application/json'
-      }
-    };
-    
-    fetch(baseBackendUrl + '/dataset', init)
-    .then(data => data.json())
-    .then(response => {
-      console.log(response)
-      const fileName = response.filename + '.zip';
-      const aTag = document.createElement("a");
-      aTag.href = "/piv/archive/" + fileName;         // Root '/' is the nodejs /public folder
-      aTag.setAttribute("download", "/piv/archive/" + fileName);
-      //aTag.href = baseBackendUrl + "/piv/archive/" + fileName;         // Root '/' is the nodejs /public folder
-      //aTag.setAttribute("download", baseBackendUrl + "/piv/archive/" + fileName);
-      document.body.appendChild(aTag);
-      aTag.click();
-      aTag.remove();
-    });
-  }
 
   const GetExecuteOrTestResponse = (test) => {
     const messages = document.getElementById('messages');
@@ -159,7 +135,7 @@ const PivConfigure = ({getState, setState, deploying, deployrunning}) => {
           ))}
         </select>
       </div>
-      <PivConfigButtons deploying={deploying} deployrunning={deployrunning} getStateFunc={getState} onCreateFunc={onCreate} onSaveFunc={onSave} onDeleteFunc={onDelete} OnExecuteFunc={OnExecute} onDownloadFunc={onDownload} onTestFunc={onTest} />
+      <PivConfigButtons deploying={deploying} deployrunning={deployrunning} getStateFunc={getState} onCreateFunc={onCreate} onSaveFunc={onSave} onDeleteFunc={onDelete} OnExecuteFunc={OnExecute} onTestFunc={onTest} />
     </div>
   )
 }
