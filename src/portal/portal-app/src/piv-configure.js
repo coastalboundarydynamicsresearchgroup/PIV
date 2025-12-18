@@ -85,6 +85,8 @@ const PivConfigure = ({getState, setState, deploying, deployrunning}) => {
       const aTag = document.createElement("a");
       aTag.href = "/piv/archive/" + fileName;         // Root '/' is the nodejs /public folder
       aTag.setAttribute("download", "/piv/archive/" + fileName);
+      //aTag.href = baseBackendUrl + "/piv/archive/" + fileName;         // Root '/' is the nodejs /public folder
+      //aTag.setAttribute("download", baseBackendUrl + "/piv/archive/" + fileName);
       document.body.appendChild(aTag);
       aTag.click();
       aTag.remove();

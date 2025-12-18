@@ -2,11 +2,14 @@ import os
 import glob
 import json
 import time
+from shutil import make_archive
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
 
 configurationpath = '/pivdata/configuration'
+testdatapath = '/pivdata/data/test'
+archivepath = '/pivdata/archive'
 
 
 class RunState:
@@ -137,6 +140,7 @@ class Watcher:
                     self.handler.runstate.testScanNumber += 1
 
             self.clean_old_test_configurations()
+            self.zip_test_results()
 
         elif isinstance(self.handler.runstate.configurationName, str):
             self.load_configuration(self.handler.runstate.configurationName)
@@ -172,3 +176,13 @@ class Watcher:
                     print(f"Deleted: {test_file}")
                 except OSError as e:
                     print(f"Error deleting {test_file}: {e}")
+
+    def zip_test_results(self):
+        global testdatapath
+        global archivepath
+
+        utcDateTime = time.gmtime()
+        archiveFilename = "test_{year:04d}-{month:02d}-{day:02d}_{hour:02d}.{minute:02d}.{second:02d}".format(year=utcDateTime.tm_year, month=utcDateTime.tm_mon, day=utcDateTime.tm_mday, hour=utcDateTime.tm_hour, minute=utcDateTime.tm_min, second=utcDateTime.tm_sec)
+        make_archive(archivepath + "/" + archiveFilename, "zip", testdatapath)
+
+        return archiveFilename
