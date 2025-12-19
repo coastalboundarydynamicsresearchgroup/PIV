@@ -8,26 +8,6 @@ const commonKey = singleton.getCommonKey();
 
 const configurationPath = '/piv/configuration/';
 const testSteppingsPath = '/piv/data/';
-// TODO : Load this from some file
-/*
-var testSteppings = {
-  "CameraGain": {
-    "start": 0,
-    "end": 47,
-    "step": 5
-  },
-  "CameraGamma": {
-    "start": 0.5,
-    "end": 2.0,
-    "step": 0.25
-  },
-  "ShutterOpenTime": {
-    "start": 2,
-    "end": 5,
-    "step": 1
-  }
-}
-*/
 
 var putPivTest = async function(req, res) {
   const { configurationName } = req.params;
