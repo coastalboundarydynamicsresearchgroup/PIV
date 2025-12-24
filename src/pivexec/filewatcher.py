@@ -6,6 +6,8 @@ from shutil import make_archive
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
+from deployrunner import DeployRunner
+
 
 configurationpath = '/pivdata/configuration'
 testdatapath = '/pivdata/data/test'
@@ -118,71 +120,10 @@ class Watcher:
         while True:
             time.sleep(0.1)
             if self.handler.runstate.is_running():
-                self.execute_configurations()
+                runner = DeployRunner(self.handler.runstate)
+                runner.execute_configurations()
         #except:
         #    self.observer.stop()
 
         self.observer.join()
         print("\nWatcher Terminated\n")
-
-    def execute_configurations(self):
-        if isinstance(self.handler.runstate.configurationName, list):
-            self.handler.runstate.test = True
-            for configName in self.handler.runstate.configurationName:
-                # Every time self.runHandler (below) completes, the running flag will be false.
-                if self.handler.runstate.is_test():
-                    self.handler.runstate.running = True
-
-                self.load_configuration(configName)
-                if self.handler.runstate.is_running():
-                    print(f'Runstate is running for test, calling run handler for {configName}')
-                    self.runHandler(self.handler.runstate)
-                    self.handler.runstate.testScanNumber += 1
-
-            self.clean_old_test_configurations()
-            self.zip_test_results()
-
-        elif isinstance(self.handler.runstate.configurationName, str):
-            self.load_configuration(self.handler.runstate.configurationName)
-            if self.handler.runstate.is_running():
-                print('Runstate is running, calling run handler')
-                self.runHandler(self.handler.runstate)
-
-        print('Run is complete, resetting runstate')
-
-        self.handler.runstate.Reset()
-
-
-    def load_configuration(self, configurationName):
-        fullpathname = configurationpath + '/' + configurationName + ".json"
-        if os.path.isfile(fullpathname):
-            print(f'Loading configuration {fullpathname}')
-            with open(fullpathname, 'r') as configfile:
-                self.handler.runstate.configuration = json.load(configfile)
-            self.handler.runstate.configurationName = configurationName
-        else:
-            self.handler.runstate.running = False
-            self.handler.runstate.runChange = False
-
-    def clean_old_test_configurations(self):
-        full_pattern = os.path.join(configurationpath, "__test*.json")
-
-        # List files matching the pattern
-        test_files = glob.glob(full_pattern)        
-        for test_file in test_files:
-            if os.path.isfile(test_file):  # Ensure it's a file, not a subdirectory
-                try:
-                    os.remove(test_file)
-                    print(f"Deleted: {test_file}")
-                except OSError as e:
-                    print(f"Error deleting {test_file}: {e}")
-
-    def zip_test_results(self):
-        global testdatapath
-        global archivepath
-
-        utcDateTime = time.gmtime()
-        archiveFilename = "test_{year:04d}-{month:02d}-{day:02d}_{hour:02d}.{minute:02d}.{second:02d}".format(year=utcDateTime.tm_year, month=utcDateTime.tm_mon, day=utcDateTime.tm_mday, hour=utcDateTime.tm_hour, minute=utcDateTime.tm_min, second=utcDateTime.tm_sec)
-        make_archive(archivepath + "/" + archiveFilename, "zip", testdatapath)
-
-        return archiveFilename
