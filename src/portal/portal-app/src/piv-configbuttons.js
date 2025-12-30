@@ -1,6 +1,10 @@
 import './App.css';
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
+import PivDatasets from './piv-datasets';
 
-const PivConfigButtons = ({deploying, deployrunning, getStateFunc, onCreateFunc, onSaveFunc, onDeleteFunc, onDeployFunc, onDownloadFunc, onTestClicked, test}) => {
+
+const PivConfigButtons = ({deploying, deployrunning, getStateFunc, onCreateFunc, onSaveFunc, onDeleteFunc, OnExecuteFunc, onTestFunc}) => {
 
   const GetSelectedConfiguration = () => {
     var selectedConfiguration = -1;
@@ -24,13 +28,18 @@ const PivConfigButtons = ({deploying, deployrunning, getStateFunc, onCreateFunc,
     return GetSelectedConfiguration() >= 0 && !getStateFunc('nametouched');
   }
 
-  const DeployButtonEnabled = () => {
-    return test || GetSelectedConfiguration() >= 0 && !getStateFunc('nametouched') && !getStateFunc('valuetouched');
+  const ExecuteAndTestButtonEnabled = () => {
+    return GetSelectedConfiguration() >= 0 && !getStateFunc('nametouched') && !getStateFunc('valuetouched');
   }
 
-  const DeployButtonText = () => {
+  const ExecuteButtonText = () => {
     const deployFlag = !deploying && !deployrunning;
     return deployFlag ? "Execute" : "Stop";
+  }
+
+  const TestButtonText = () => {
+    const deployFlag = !deploying && !deployrunning;
+    return deployFlag ? "Test" : "Stop";
   }
 
   return (
@@ -52,22 +61,26 @@ const PivConfigButtons = ({deploying, deployrunning, getStateFunc, onCreateFunc,
       </div>
 
       <div className="configuration-buttonrow">
-        <button type="button" id="deploy-button" disabled={!DeployButtonEnabled()} onClick={onDeployFunc}>
-            { DeployButtonText() }
+        <button type="button" id="deploy-button" disabled={!ExecuteAndTestButtonEnabled()} onClick={OnExecuteFunc}>
+            { ExecuteButtonText() }
         </button>
-        <button type="button" id="test-button" onClick={onTestClicked}>
-            Test
+        <button type="button" id="test-button" disabled={!ExecuteAndTestButtonEnabled()} onClick={onTestFunc}>
+            { TestButtonText() }
         </button>
       </div>
 
       <div className="configuration-buttonrow">
-        <button type="button" id="download-button" onClick={onDownloadFunc}>
-            Download Data
-        </button>
+        <Popup trigger={
+          <button type="button" id="download-button" >
+              Manage Datasets...
+          </button>}
+          position = "top center" >
+          <PivDatasets />
+        </Popup>
       </div>
 
-    </div>
-  )
+     </div>
+  );
 }
 
 export default PivConfigButtons;

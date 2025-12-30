@@ -1,0 +1,17 @@
+{
+  "CameraGain": {
+    "start": 0,
+    "end": 47,
+    "step": 5
+  },
+  "CameraGamma": {
+    "start": 0.5,
+    "end": 2.0,
+    "step": 0.25
+  },
+  "ShutterOpenTime": {
+    "start": 2,
+    "end": 5,
+    "step": 1
+  }
+}

@@ -7,19 +7,18 @@ const commonKey = singleton.getCommonKey();
 
 
 const configurationPath = '/piv/configuration/';
-
-// TODO : Load this from some file
-var testSteppings = {
-  "CameraGain": {
-    "start": 0,
-    "end": 47,
-    "step": 5,
-  }
-}
+const testSteppingsPath = '/piv/data/';
 
 var putPivTest = async function(req, res) {
   const { configurationName } = req.params;
   console.log(`PUT test ${configurationName}`);
+
+  let teststeppings = {};
+  const testSteppingsFile = testSteppingsPath + 'teststeppings.json';
+  if (fs.existsSync(testSteppingsFile)) {
+    teststeppings = JSON.parse(fs.readFileSync(testSteppingsFile, 'utf8'));
+    console.log(`Loaded test steppings from file: ${JSON.stringify(teststeppings)}`);
+  }
 
   let configuration = {};
 
@@ -28,7 +27,7 @@ var putPivTest = async function(req, res) {
 
   if (fs.existsSync(configurationFile)) {
     configuration = JSON.parse(fs.readFileSync(configurationFile, 'utf8'));
-    const runFileSet = GenerateTestConfigurations(configuration, testSteppings);
+    const runFileSet = GenerateTestConfigurations(configuration, teststeppings);
     const runfile = { "configurationName": runFileSet };
     const runFilePath = configurationPath + '__runfile__.deploy';
     fs.writeFileSync(runFilePath, JSON.stringify(runfile));
@@ -84,7 +83,7 @@ var GenerateTestConfigurations = function(configuration, steppings) {
 
       const savedValue = configuration[key];
 
-      for (let currentValue = start; currentValue < end; currentValue += step) {
+      for (let currentValue = start; currentValue <= end; currentValue += step) {
         configuration[key] = currentValue;
         const configName = `__test_${key}_${currentValue}__`;
         const configurationFile = configurationPath + configName + '.json';

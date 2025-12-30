@@ -9,7 +9,10 @@ const getConfigurations = require('./routehandlers/getconfigurations');
 const putconfiguration = require('./routehandlers/putconfiguration');
 const getconfiguration = require('./routehandlers/getconfiguration');
 const deleteconfiguration = require('./routehandlers/deleteconfiguration');
+const getDatasets = require('./routehandlers/getdatasets');
+const deleteDataset = require('./routehandlers/deletedataset');
 const getDataset = require('./routehandlers/getdataset');
+const getPivArchiveFile_dynamic = require('./routehandlers/getarchivefile');
 const {putPivDeploy, putPivUndeploy} = require('./routehandlers/putpivdeploy');
 const {putPivTest, putPivStopTest} = require('./routehandlers/putpivtest');
 const getDeployProgress = require('./routehandlers/getdeployprogress');
@@ -37,8 +40,17 @@ router.get('/configuration/:configurationName', [getconfiguration]);
 // Delete the content of the specified configuration under the specified name.
 router.delete('/configuration/:configurationName', [deleteconfiguration]);
 
-// Get the zipped data results from any and all previous deployments.
-router.get('/dataset', [getDataset]);
+// Get the file name of the zipped data results from any and all previous deployments.
+router.get('/datasets', [getDatasets]);
+
+// Get the file name of the zipped data results from any and all previous deployments.
+router.get('/dataset/:datasetName', [getDataset]);
+
+// Delete the specified dataset by specified name.
+router.delete('/dataset/:datasetName', [deleteDataset]);
+
+// Get the specified PIV archive file.
+router.get('/piv/archive/:filename', [getPivArchiveFile_dynamic]);
 
 // Put the command to execute with the specified configuration.
 router.put('/piv/execute/:configurationName', [putPivDeploy]);

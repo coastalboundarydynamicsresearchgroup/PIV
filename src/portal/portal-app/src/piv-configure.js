@@ -7,7 +7,7 @@ import PivConfigButtons from './piv-configbuttons'
 const baseBackendUrl = 'http://' + configuration.services.backend.host + ':' + configuration.services.backend.port;
 
 
-const PivConfigure = ({getState, setState, deploying, deployrunning, onTestClicked, onPingData, test}) => {
+const PivConfigure = ({getState, setState, deploying, deployrunning}) => {
   const [configurations, setConfigurations] = useState([]);
   const [configurationChanged, setConfigurationChanged] = useState(0);
   const [selectedConfiguration, setSelectedConfiguration] = useState(0);
@@ -58,35 +58,18 @@ const PivConfigure = ({getState, setState, deploying, deployrunning, onTestClick
     });
   }
 
-  const onDeploy = () => {
-    console.log(`Deploying configuration`);
-    GetDeployResponse();
+  const OnExecute = () => {
+    console.log(`Executing configuration`);
+    GetExecuteOrTestResponse(false);
   }
 
-  const onDownload = () => {
-    var init = {
-      method: 'GET',
-      mode: 'cors',
-      headers: {
-        'Content-type': 'application/json'
-      }
-    };
-    
-    fetch(baseBackendUrl + '/dataset', init)
-    .then(data => data.json())
-    .then(response => {
-      console.log(response)
-      const fileName = response.filename + '.zip';
-      const aTag = document.createElement("a");
-      aTag.href = "/piv/archive/" + fileName;         // Root '/' is the nodejs /public folder
-      aTag.setAttribute("download", "/piv/archive/" + fileName);
-      document.body.appendChild(aTag);
-      aTag.click();
-      aTag.remove();
-    });
+  const onTest = () => {
+    console.log(`Testing configuration`);
+    GetExecuteOrTestResponse(true);
   }
 
-  const GetDeployResponse = () => {
+
+  const GetExecuteOrTestResponse = (test) => {
     const messages = document.getElementById('messages');
 
     var init = {
@@ -104,7 +87,13 @@ const PivConfigure = ({getState, setState, deploying, deployrunning, onTestClick
     }
   
     const configurationName = document.getElementById("newconfiguration").value;
-    const commandUrl = deployFlag ? '/piv/execute/' + configurationName : '/piv/stop'
+    var commandUrl = '';
+    if (test) {
+      commandUrl = deployFlag ? '/piv/test/' + configurationName : '/piv/stoptest'
+    } else {
+      commandUrl = deployFlag ? '/piv/execute/' + configurationName : '/piv/stop'
+    }
+
     fetch(baseBackendUrl + commandUrl, init)
     .then(data => data.json())
     .then(response => {
@@ -146,7 +135,7 @@ const PivConfigure = ({getState, setState, deploying, deployrunning, onTestClick
           ))}
         </select>
       </div>
-      <PivConfigButtons deploying={deploying} deployrunning={deployrunning} getStateFunc={getState} onCreateFunc={onCreate} onSaveFunc={onSave} onDeleteFunc={onDelete} onDeployFunc={onDeploy} onDownloadFunc={onDownload} onTestClicked={onTestClicked} test={test} />
+      <PivConfigButtons deploying={deploying} deployrunning={deployrunning} getStateFunc={getState} onCreateFunc={onCreate} onSaveFunc={onSave} onDeleteFunc={onDelete} OnExecuteFunc={OnExecute} onTestFunc={onTest} />
     </div>
   )
 }

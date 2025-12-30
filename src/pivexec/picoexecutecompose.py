@@ -20,13 +20,13 @@ class PicoExecuteCompose(PivExecuteCompose):
     delay_minutes = float(self.runstate.configuration['Minutes'])
     delay_seconds = int(delay_minutes * 60)
 
-    self.emit_status('Waiting for ' + str(delay_seconds) + ' seconds', logToProgress=True, options={'deployrunning':True})
+    PivExecuteCompose.diagnostic.emit_status('Waiting for ' + str(delay_seconds) + ' seconds', logToProgress=True, options={'deployrunning':True})
     for second in range(delay_seconds):
-      self.emit_status('Startup delay', logToFile=False, logToProgress=True, options={'delaySec':delay_seconds - second})
+      PivExecuteCompose.diagnostic.emit_status('Startup delay', logToFile=False, logToProgress=True, options={'delaySec':delay_seconds - second})
       time.sleep(1)
       if not self.runstate.is_running():
         break
-    self.emit_status('Done waiting ' + str(delay_seconds) + ' seconds', logToProgress=True, options={'delaySec':0})
+    PivExecuteCompose.diagnostic.emit_status('Done waiting ' + str(delay_seconds) + ' seconds', logToProgress=True, options={'delaySec':0})
 
 
   def transact_pico(self, picocc, command):
@@ -48,7 +48,7 @@ class PicoExecuteCompose(PivExecuteCompose):
     configuration = self.runstate.configuration
     configuration['Command'] = 'Configure'
     result = self.transact_pico(picocc, configuration)
-    self.emit_status('Pico configuration sent', logToProgress=True, options={'deployrunning':True})
+    PivExecuteCompose.diagnostic.emit_status('Pico configuration sent', options={'deployrunning':True})
     return result
   
   def pico_send_command(self, picocc, command):
@@ -62,7 +62,7 @@ class PicoExecuteCompose(PivExecuteCompose):
     """
     commandObject = {'Command': command}
     result = self.transact_pico(picocc, commandObject)
-    self.emit_status(f'Pico command {command} sent', logToProgress=True, options={'deployrunning':True})
+    PivExecuteCompose.diagnostic.emit_status(f'Pico command {command} sent')
     return result
 
   def camera_configure(self, camera):
@@ -83,10 +83,10 @@ class PicoExecuteCompose(PivExecuteCompose):
 
   def compose_and_execute(self):
     with HardwareCommChannel(self.runstate) as picocc:
-      self.emit_status("Connecting to camera and acquiring info", logToFile=False, logToProgress=True, options={'deployrunning':True, 'count':0})
-      with Camera() as camera:
+      PivExecuteCompose.diagnostic.emit_status("Connecting to camera", logToProgress=True)
+      with Camera(self.runstate) as camera:
         if not camera.valid:
-          self.emit_status(camera.status, logToFile=False, logToProgress=True, options={'deploying':False,'deployrunning':False})
+          PivExecuteCompose.diagnostic.emit_status(camera.status, logToFile=False, logToProgress=True, options={'deploying':False,'deployrunning':False})
           return
         
         if self.runstate.get_testScanNumber() == 0:
@@ -113,11 +113,13 @@ class PicoExecuteCompose(PivExecuteCompose):
         while image_successful:
             image_successful = camera.acquire_image(self.pivFilePath, convert=self.runstate.is_test())
 
-        print(f'Camera acquired {camera.imagenumber} images')
+        PivExecuteCompose.diagnostic.emit_status(f'Camera acquired {camera.imagenumber} images', logToProgress=True)
 
-        while self.runstate.is_running() and camera.valid:
+        picoRunning = True
+        while picoRunning:
           status = self.pico_send_command(picocc, 'GetStatus')
-          if status['IsRunning'] != 1:
+          picoRunning = status['IsRunning'] == 1
+          if not picoRunning:
             self.stop_deployment()
 
         self.pico_send_command(picocc, 'Stop')
@@ -127,9 +129,8 @@ class PicoExecuteCompose(PivExecuteCompose):
         while images_remain:
           images_remain = camera.acquire_image(self.pivFilePath, convert=self.runstate.is_test())
 
-        print(f'Camera post-acquired {camera.imagenumber} images')
+        PivExecuteCompose.diagnostic.emit_status(f'Camera post-acquired {camera.imagenumber} images', logToProgress=True)
 
         camera.end_acquisition_mode()
         self.camera_reset_configuration(camera)
 
-        self.emit_status("Compose and deploy '" + self.runstate.get_configurationName() + "' complete", logToFile=False, logToProgress=True, options={'deploying':False,'deployrunning':False})

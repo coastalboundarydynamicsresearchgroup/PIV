@@ -39,7 +39,7 @@ var putPivDeploy = async function(req, res) {
 }
 
 var putPivUndeploy = async function(req, res) {
-  console.log(`PUT undeploy`);
+  console.log(`PUT undeploy with inprogress deploying flag ${inprogress[commonKey].deploying}`);
 
   const runFilePath = configurationPath + '__runfile__.deploy';
   if (fs.existsSync(runFilePath)) {
@@ -47,9 +47,6 @@ var putPivUndeploy = async function(req, res) {
     console.log(`Undeployed all configurations`);
   }
 
-  inprogress[commonKey].status = `Undeploying all configurations`;
-  inprogress[commonKey].deploying = false;
-  
   var response = {
     progress: inprogress[commonKey],
     response: `Stopped all piv deploy configurations`,
