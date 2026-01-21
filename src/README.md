@@ -1,4 +1,9 @@
-# PIV Controller Software setup
+# Particle Image Velocimetry Controller Software setup
+
+## Build and Flash the Raspberry Pi Pico Firmware
+- In VSCode, install the Raspberry Pi Pico extension.
+- Using a console: `$ sudo apt update` and `$ sudo apt install build-essential gdb`.
+- Assuming you have cloned the git PIV repository into ~/github/PIV, open VSCode and open folder `~/github/PIV/src/pico/piv`.  The Pico
 
 ## Generic Steps to Build Docker Containers
 Some of the components of the PIV controller run in docker containers, and the first step in software setup is to build these containers.  
