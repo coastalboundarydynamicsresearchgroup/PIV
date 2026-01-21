@@ -1,6 +1,5 @@
 # PIV Controller Software setup
 
-## Create necessary
 ## Generic Steps to Build Docker Containers
 Some of the components of the PIV controller run in docker containers, and the first step in software setup is to build these containers.  
 There are scripts for these components, which do the majority of the setup work, but the `npm install` step sometimes fails during the build and must be done manually later:
@@ -32,4 +31,43 @@ Execute the generic steps above in the `~/github/PIV/src/pivdeploy` directory, c
 
 `$ mkdir /pivdata/data`  
 `$ mkdir /pivdata/configuration`  
+
+## Setup Acquisition Software to Start Automatically on Boot
+The PIV data acquisition software is in three subsystems:
+- `portal`      A Single-Page Application (SPA) web page written in Javascript using the React.js framework
+- `pivdeploy`   A web service for file management and deployment control written in Javascript using the Node.js framework
+- `pivexec`     A Python application to do the low-level real-time communication and control as configured
+
+The two web services, `portal` and `pivdeploy`, run inside Docker containers that act to keep the isolated from each other and other components in the system.  The real-time Python application, `pivexec`, needs access to the hardware of the host system, so runs in the host.
+
+The whole system can be run manually:  
+`> cd /home/piv/github/PIV/src`  
+`> docker compose up`  
+`> cd pivexec`  
+`> python3 ./pivexec.py`  
+
+In order to automate this sequence, these commands are summarized in two service files in `/home/piv/github/PIV/bootfiles`:  
+`docker-compose-piv.service`   
+`pivexecute.service`
+
+To enable these files to start services automatically, first copy them to `/etc/systemd/system`, then enable them as services.:  
+- `> cp /home/piv/github/PIV/bootfiles/docker-compose-piv.service /etc/systemd/system`  
+- `> sudo systemctl enable docker-compose-piv.service`  
+- `> cp /home/piv/github/PIV/bootfiles/pivexecute.service /etc/systemd/system`  
+- `> sudo systemctl enable pivexecute.service`  
+
+For test, also start them manually:  
+- `> sudo systemctl start pivexecute.service`  
+- `> sudo systemctl start pivexecute.service`  
+
+The whole acquisition system, including the SPA web page and laser/camera control, should now be running.  You should be able to confirm by connecting with a web browser.
+
+Another good confirmation is to type:  
+`> docker ps`  
+`CONTAINER ID   IMAGE                      COMMAND                  CREATED       STATUS       PORTS                                         NAMES`  
+`846a5e9cb83a   louisross/portal:1.1       "docker-entrypoint.s…"   4 hours ago   Up 4 hours   0.0.0.0:80->3000/tcp, [::]:80->3000/tcp       piv-portal`  
+`e47b2907a614   louisross/piv-deploy:1.1   "npm start"              4 hours ago   Up 4 hours   0.0.0.0:5000->5000/tcp, [::]:5000->5000/tcp   piv-deploy`  
+
+The output from this command shows what docker contaiers are currently running.  The two images `louisross/portal:1.1` and `louisross/piv-deploy:1.1` indicate that the web servcies are running.
+
 

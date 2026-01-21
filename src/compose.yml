@@ -24,7 +24,7 @@ services:
     volumes:
       - "./portal/:/app"
       - "./configuration/:/app/portal-app/src/configuration"
-      - "/pivdata/:/piv"
+      - "/pivdata/:/app/portal-app/public/piv"
     depends_on:
       - piv-deploy
 
