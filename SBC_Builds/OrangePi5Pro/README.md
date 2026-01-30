@@ -135,8 +135,8 @@ There are a couple of setting that you may want to alter before starting the Wif
 Copy the service file and configuration file to their required location while logged in as the `piv` user.  Remember, the password for the `piv` user, if needed, is `piv`.
 
 `> cd /github/PIV/bootfiles`  
-`> cp create_ap.service /etc/systemd/system`  
-`> cp create_ap.conf /etc`  
+`> sudo cp create_ap.service /etc/systemd/system`  
+`> sudo cp create_ap.conf /etc`  
 `> sudo systemctl enable create_ap.service`  
 `> sudo systemctl start create_ap.service`  
 
