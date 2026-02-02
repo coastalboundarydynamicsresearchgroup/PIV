@@ -1,5 +1,7 @@
 import os
+import sys
 import glob
+from pathlib import Path
 import numpy as np
 
 import PySpin
@@ -11,11 +13,17 @@ data_path = "/pivdata/data"
 # TODO get this from user
 epoch = "Sample"
 
+if len(sys.argv) > 1:
+    epoch = sys.argv[1]
+else:
+    data_path = "./"
+    epoch = ""
+
 # Find all .raw files in the directory
 raw_files = glob.glob(os.path.join(data_path, epoch, "*.raw"))
 
 for raw_file in raw_files:
-    file_name = os.path.basename(raw_file)
+    file_name = Path(raw_file).stem
 
     # Assuming 'raw_image.raw' is your raw file and you know its format
     # You might need to specify the pixel format and dimensions if the file format doesn't inherently provide them.

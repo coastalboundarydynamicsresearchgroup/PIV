@@ -1,11 +1,13 @@
 import PySpin
 import numpy as np
 import sys
+import time
 
 
 class Camera:
   def __init__(self, runstate):
     self.runstate = runstate
+    self.tick_offset = time.time_ns()
 
     self.framerate = 100  # Configured framerate in milliseconds
     configuration = self.runstate.get_configuration()
@@ -44,6 +46,7 @@ class Camera:
         self.status = "Camera initialized"
         self.valid = True
 
+    self.tick_offset = time.time_ns()
     return self
 
 
@@ -381,6 +384,7 @@ class Camera:
 
       #  Retrieve next received image
       image_result = self.cam.GetNextImage(self.framerate)
+      current_tick = (time.time_ns() - self.tick_offset) // 1_000_000
 
       #  Ensure image completion
       if image_result.IsIncomplete():
@@ -389,13 +393,13 @@ class Camera:
 
       else:
         # Create a unique filename, save image to file.
-        filename = f'Trigger-{self.caminfo["DeviceSerialNumber"]}-{self.imagenumber}.raw'
+        filename = f'{current_tick:07d}-{self.caminfo["DeviceSerialNumber"]}-{self.imagenumber}.raw'
         image_result.Save(folder + filename)
 
         # Do in-line jpg conversion in test mode only.
         if convert:
           image_converted = self.convert_image(image_result)
-          filename = f'Trigger-{self.caminfo["DeviceSerialNumber"]}-{self.imagenumber}.jpg'
+          filename = f'{current_tick:07d}-{self.caminfo["DeviceSerialNumber"]}-{self.imagenumber}.jpg'
           image_converted.Save(folder + filename)
 
         image_result.Release()
@@ -420,6 +424,7 @@ class Camera:
   def convert_all_images(self, folder='./'):
     """
     This function converts all images in the folder to mono 8.
+    Deprecated: use FlirImageConvert instead.
     """
     offline_image_width = 1440
     offline_image_height = 1080

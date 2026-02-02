@@ -104,9 +104,7 @@ class DeployHandler(FileSystemEventHandler):
 
 
 class Watcher:
-
-    def __init__(self, runHandler, debug):
-        self.runHandler = runHandler
+    def __init__(self, debug):
         self.debug = debug
         self.observer = Observer()
         self.handler = DeployHandler()

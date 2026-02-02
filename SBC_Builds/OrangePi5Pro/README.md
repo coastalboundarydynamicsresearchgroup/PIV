@@ -118,6 +118,37 @@ At the bottom, enter a line like
 -Try creating a subfolder and writing a file.
 
 
+### Enable the Wifi hotspot
+This step uses a utility called `create_ap` that is alredy installed on the OrangePi OS image to create the necessary network environment for a Wifi hotspot.  The hotspot will have and SSID called `pivN`, where `N` will be an integer identifying the PIV controller instance.  It will be an open Wifi hotspot with no password.
+
+The `create_ap` utility does not permanently open the Wifi hotspot, but must remain running for the hotspot to be available.  To make this happen automatically on boot, a service is created and enabled.  The service is defined by the file `create_ap.service` in the `bootfiles` directory of this repo.  The details of the configuration of the Wifi hotspot are defined in a file called `create_ap.conf`, also in the `bootfiles` directory.
+
+Here is the content of the create_ap.conf file:  
+![create_ap.conf](create_ap.conf.png)
+
+There are a couple of setting that you may want to alter before starting the Wifi hotspot:
+- `FREQ_BAND=2.4`  Change this number to `5` to use the faster 5 GHz Wifi band.  The tradeoff is that 2.4 GHz will penetrate better through walls and other obstacles, so may give better range, even as the system is deployed.
+- `INTERNET_IFACE=enP4p65S0`  This interface name is the wired ethernet of the Orange Pi 5 Pro.  It will almost certainly be the same on future systems built with the same hardware.  Check with the command `> ip a` to confirm.
+- `SSID=piv1`  Change this for future instances of the PIV controller to `piv2` etc.  This way, if more than one PIV controller is in the same deployment and powered on, they will all have distinct Wifi access point names.
+- `PASSPHRASE=`  This is currently set to no password so the Wifi hotspot is open for all to log in to.  If this is not desired, set this to a password with at least 8 characters.
+
+Copy the service file and configuration file to their required location while logged in as the `piv` user.  Remember, the password for the `piv` user, if needed, is `piv`.
+
+`> cd /github/PIV/bootfiles`  
+`> sudo cp create_ap.service /etc/systemd/system`  
+`> sudo cp create_ap.conf /etc`  
+`> sudo systemctl enable create_ap.service`  
+`> sudo systemctl start create_ap.service`  
+
+This should allow the service to run on boot (`systemctl enable`) and start it immediately (`systemctl start`).  To confirm it is running, use  
+`> systemctl status create_ap.service`  
+
+This should output a lot of information about the service, including `active(running)`.
+
+
+### Install the Real-Time Clock backup battery
+The Orange Pi 5 Pro uses the Rockchip RK3688S with an on-chip Real-time clock (RTC) module, so no external module is required.  However, the board is not supplied with a back battery, so the RTC will lose track of time whenever the power is off.  There is a small 2-pin header beside the 40-pin GPIO header labeled `RTC` that accepts a standard CR2032 3V battery with a 1.25mm pitch.  Note not to use the similar fan header.  The red wire from the battery goes on the left when viewed from the close edge, aslo marked in the silkscreen with a `+`.
+
 
 ## Install software
 - **Visual Studio Code**
