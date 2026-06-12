@@ -1,5 +1,48 @@
 # PIV Controller using Orange Pi 5 Pro
 
+## Orange Pi 5 Pro assembly
+At unboxing, the Orange Pi 5 Pro needs the following parts mounted:
+- On the front, the Wifi/bluetooth antenna
+- On the front, the Real-Time Clock (RTC) battery
+- On the back, the EMMC memory module
+- On the back, the M.2 drive
+
+<img src="OrangePi_Top.png" alt="Orange Pi 5 Pro Top" width="500" style="float: left; margin-right: 15px; margin-bottom: 10px;">
+<h2>The front of the Orange Pi 5 Pro</h2>
+<br>
+
+Note the orientation of the RTC battery connector, which should be a 1.25 mm pitch between pins.  In the orientation shown, the red (positive) wire should be up.  
+<br>
+
+The Wifi/bluetooth antenna uses a really tiny friction-fit connector.  This might require magnification just to see how it goes together.  After you are *sure* you have the antenna lead centered on the connector, press firmly.  It might work best with some sort of flat surface, but can be done with a fingertip.
+<br clear="all" />
+
+
+<img src="OrangePi_Bottom.png" alt="Orange Pi 5 Pro Bottom" width="500" style="float: left; margin-right: 15px; margin-bottom: 10px;">
+<h2>The back of the Orange Pi 5 Pro</h2>
+<br>
+
+The M.2 drive selected should be a 2280 (22 x 80 mm) NVMe drive.  It's recommended to select something that is spec'ed to run without heat sinks or fans.  In this orientation, the connector is on the bottom, and the retaining screw on top of the image.
+<br>
+
+The EMMC module provides storage for the boot image and all software.  It is faster and more reliable that a micro SD card, and is the preferred boot device.  In this image, the EMMC module is shown installed just to the right of the M.2 drive.  Note the module's orientation, with the corner cutout at the lower right.  The module's corner cutout should match the silkscreened paint on the Pi.
+
+<br clear="all" />
+
+<img src="OrangePi_Ports.png" alt="Orange Pi 5 Pro Ports" width="500" style="float: left; margin-right: 15px; margin-bottom: 10px;">
+<h2>The interface edge of the Orange Pi 5 Pro</h2>
+<br>
+
+At the left, the wired Ethernet RJ45 connector.  This is not used during operation, but is needed during setup and development.  Although the board has Wifi, the setup procedure repurposes it to provied a Wifi hot spot, so it is not available to connect to the internet.  When an internet connection to Github or other locations is needed during setup, it should be done through the wired Ethernet.
+<br>
+
+There are four USB connectors shown.  Note the upper left one has a blue separator, indicating it is USB 3.  This connector provieds faster data rates than the other three, and should be used for the camera.  Any of the three may then be allocated for use by the Raspberry Pi Pico laser/camera controller, mouse and keyboard.
+<br>
+
+The micro SD slot is just visible on the bottom of the card.  As decribed in the procedure below, the initial boot is done from a micro SD card in this slot, but the O/S will be copied onto the EMMC module during setup, and the micro SD card should then be removed.  NOTE: If there is a micro SD card present in the slot with a bootable O/S, it will be selected for boot, regardless of whether the EMMC card is also bootable.  During operation, the micro SD card must be removed to allow the card to boot from EMMC.
+
+<br clear="all" />
+
 ## Boot the OrangePi
 - Burn the file `Orangepi5pro_1.0.6_ubuntu_jammy_desktop_xfce_linux6.1.43.img` into a micro SD card using BalenaEtcher or similar.  The card should be at least 32 GB.
 - Insert the SD card into the SBC, plus monitor, keyboard, mouse.  Power up with USB C supply.  The SBC should boot within about 10 seconds, without pressing the power button.
