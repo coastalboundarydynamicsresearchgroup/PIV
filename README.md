@@ -16,4 +16,75 @@ The sequence used by pivexec.py during a run is configured through a web page wr
 
 Here is an overview of the web portal.  
 
-![Configuration and Control](./images/PIV_Configuration_and_Control_Portal.png)
+<img src="./images/PIV_Configuration_and_Control_Portal.png" alt="Configuration and Control" width="1000" style="margin-right: 15px; margin-bottom: 10px;">
+
+## Typical Workflow ##
+Configuration and deployment is done with a Single-Page Application (SPA) web page.  All features are available in this single page, and can be accessed from any browser.  To access the web page:
+1. Make sure your computer has connected to the PIV Wifi hotspot.  Typically, these are named `PIV1`, `PIV2`, etc., and there is no password needed.  During deployment, there will be no Internet access through this hotspot (although Internet is sometimes available during development).
+2. Open a tab in your browser and navigate to `http://10.24.1.1`.  Multiple computers can connect to the PIV Wifi and use the SPA page simultaneously.  Multiple users should use common sense to coordinate their actions.
+
+### Select a Configuration ###
+Step one is to select or create a configuration.  The list of configurations on the left shows existing configurations; just click on one and you are ready to go.  If you need to create a new one, just type a new name in the edit field above the list and press the `Create` button.  (Hint: The `Create` button uses the values currently showing in all the configuration parameters, so you can use this feture to clone an existing configuration, then change just a few parameters in the clone.)  
+
+To keep things clean, an unused configuration can be deleted simply by selecting it and pressing the `Delete` button.
+
+### Edit fields in the Selected Configuration ###
+Once a configuration has been selected, the next step is to ensure that all configuration parameters are correct.  The detailed list of all parameters is discussed below.  If changes are made to one or more parameter fields, they will not take effect until the `Save` button is pressed.  To discard any changes, just navigate away from the configuration, then back to it, without pressing `Save`.
+
+### Deploy a Configuration to the PIV ###
+When a configuration has been selected and edited, it can be deployed with the `Execute` button.  As long as the PIV instrument is in Wifi range of a computer, the current status of the deployment will be shown in the `Status` group below the configuration fields.
+
+### Configured Camera and Laser Timing ###
+The parameters configured in the fields in the section labeled `Timing` control the length of a *frame*, how many frames make up a *group*, and how many total groups will exist.  Let's cover some definitions of these terms:  
+
+**frame**: A frame constitutes the timing around a single image captured by the camera.  The duration of the frame is given by the shutter time, in milliseconds, referred to as `Tsh` in the diagram below.  The shutter time is how long the camera shutter is held open.  The laser is always pulsed for the laser time, also in milliseconds, referred to as `Tls`.  The laser on time must always be less than the shutter open time, and will automatically be centered within the shutter time in such a way that there will be a dark period before the laser, and an equal dark period after the laser.
+
+An example might help at this point.  Assume the shutter time `Tsh` is 5 ms and the laser time `Tls` is 1 ms.  Then, a **frame** will consist of the shutter opening for 2 ms, followed by the laser for 1 ms, followed by 2 ms before the shutter closes again.
+
+![Timing a single frame](./images/PIVTiming1.png)
+
+**group**: A group is a number (usually 2) of frames to be taken at a precise interval, referred to as `Tfr` above.  The interval is specified in milliseconds, and is the time between the start of one frame and the start of the next.  Thus, the total amount of time a group takes is the number of frames in the group times `Tfr` plus one more frame time, `Tsh`: (Number of Frames in Group * Tfr) + Tsh.
+
+The run consists of a total group count, where the time `Tgr` in milliseconds specifies the time from the start of the first frame of one group to the start of the first frame of the next group.
+
+To extend the previous example, assume that `Tfr` is 8 ms and `Tgr` is 20 ms.  Since each frame (see above) takes 5 ms, there will be a 3 ms dwell time between the end of the first frame and the start of the second frame.  Let us further assume that the number of frames in each group is configured to 2, and the number of groups in the run is 3.  Now each frame takes 5 ms, with a 3 ms dwell between, so the full group takes 5 + 3 + 5 = 13 ms.  There will then be a 7 ms idle time after the group to allow the full 20 ms `Tgr` to expire before the next group starts.
+
+In general (if we discard the few millisecond error from assuming an idle time after the last group), we can simply compute the time for the full run as: Total number of groups * `Tgr`.
+
+A total dataset for a run is composed of the total group count times the number of frames per group.  The diagram below shows three groups.  Typically, this will be congfigured to a very large number, perhaps whatever will fit on the data drive.  It might even be assumed that the battery will expire before the configured run can complete.
+
+![Timing of frames in a group](./images/PIVTiming2.png)
+
+## Buttons, Controls, Configuration Fields and Status ##
+
+### Buttons and Controls ###
+#### `Create` Button ####
+#### `Save` Button ####
+#### `Delete` Button ####
+#### `Execute` Button ####
+#### `Test` Button ####
+#### `Manage Datasets` Button ####
+
+### Configuration Fields ###
+#### General ####
+- `Delay to Start`
+#### Camera Settings ####
+- `Black level`
+- `Gain`
+- `Gamma`
+#### Timing ####
+- `Shutter Time`
+- `Laser Time`
+- `Number of frames in group`
+- `Frame repeat period`
+- `Group repeat period`
+- `Total group count`
+
+### Status and Diagnostic Fields ###
+- `Progress`
+- `Seconds`
+- `Count`
+- `Execution Starting`
+- `Execution Running`
+- `Log Field`
+## Files and Directory Structure ##
