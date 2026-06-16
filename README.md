@@ -24,6 +24,8 @@ Configuration and deployment is done with a Single-Page Application (SPA) web pa
 2. Open a tab in your browser and navigate to `http://10.24.1.1`.  Multiple computers can connect to the PIV Wifi and use the SPA page simultaneously.  Multiple users should use common sense to coordinate their actions.
 
 ### Select a Configuration ###
+![Configuration list with controls](./images/Select_A_Configuration.png)
+
 Step one is to select or create a configuration.  The list of configurations on the left shows existing configurations; just click on one and you are ready to go.  If you need to create a new one, just type a new name in the edit field above the list and press the `Create` button.  (Hint: The `Create` button uses the values currently showing in all the configuration parameters, so you can use this feture to clone an existing configuration, then change just a few parameters in the clone.)  
 
 To keep things clean, an unused configuration can be deleted simply by selecting it and pressing the `Delete` button.
@@ -56,16 +58,36 @@ A total dataset for a run is composed of the total group count times the number 
 ![Timing of frames in a group](./images/PIVTiming2.png)
 
 ## Buttons, Controls, Configuration Fields and Status ##
+The buttons and other controls are designed to allow you to manage a list of configuration files (see the section on Files and Directory Structure below). A listing of the files in the configuration directory on disk is displayed in the list of configurations.  Creating or deleting a configuration creates or deletes a file by the same name.  Each configuration file is a JSON file with a `.json` extension, which is not shown in the list.  The contents of each file is made up of the parameter fields.
 
 ### Buttons and Controls ###
+![Buttons and controls](./images/Select_A_Configuration.png)  
+
+The following covers the function of each of the buttons in the button group below the list of configurations.  Note that buttons are grayed out when their use is not applicable.  For example, in the screen shot above, the `Create` and `Save` buttons are grayed out, since, in the `Create` case, nothing new has been typed in the configuration name at the top, and in the `Save` case, none of the configuration parameter fields have been changed.
+
 #### `Create` Button ####
+The `Create` button is grayed out, so cannot be pressed, unless a change has been entered into the configuration  name field at the top.  Tjos field is normally auto-filled with the name of an existing configuration as configurations are selected in the list.  You can easily clone a configuration by selecting it in the list, changing its name, and pressing `Create`.  Now, you can edit parameter fields to make it unique.  
+
 #### `Save` Button ####
+The `Save` button is grayed out, so cannot be pressed, unless a change has been made to one of the parameter fields.  If you are making changes to an existing configuration, be sure to save the changes before executing it.  
+
 #### `Delete` Button ####
+The `Delete` button deletes the currently-selected configuration,  That configuration's JSON file will be permanently deleted from disk.  There is no confirmation message; the file is immediately deleted.  
+
 #### `Execute` Button ####
+Once a configuration has been selected, and any parameter fields have been edited and saved, the configuration may be executed by the PIV instrument by pressing the `Execute` button.  The execution sequence can take a long time, and collect terrabytes of images in storage, so be sure you are ready when you press this button.  When exectuion starts, the `Execute` button changes to a `Stop` button, which allows you to abort a run.  
+
+The execution sequence is:
+- **Delay start**: For the number of minutes configured, wait before starting.  This allows for physical deployment of the instrument.  The `progress` field will display a "delay start" message, and the delay time countdown will be shown in the `Seconds` status field.  
+- **Connecting to Camera**: The software stack that allows control of the camera and image acquisition is initialized at this time, and the Camera Settings configuration fields are sent to the camera.  This takes a few seconds.  During this phase, a message is shown in the `progress` field.
+- **Data Acqusition**: Using the timing configured in the `Timing` section, the camera shutter and laser will start operating, and images will start being acquired onto disk.  This can operate at very high speed, nearly a hundred images acquired every second.  A message will show in the `progress` field, and the `Count` field will show how many groups have been acquired.  
+
 #### `Test` Button ####
 #### `Manage Datasets` Button ####
 
 ### Configuration Fields ###
+![Timing Configuration Fields](./images/Configuration_Fields.png)
+
 #### General ####
 - `Delay to Start`
 #### Camera Settings ####
@@ -88,3 +110,6 @@ A total dataset for a run is composed of the total group count times the number 
 - `Execution Running`
 - `Log Field`
 ## Files and Directory Structure ##
+### Configuraiton Files ###
+### Dataset Files ###
+### Test Configuration File ###
