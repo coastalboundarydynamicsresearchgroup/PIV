@@ -133,10 +133,10 @@ After each parameter is swept as specified in `teststeppings.json`, its value is
 Note that since many runs will be made with the same configuration, it is appropriate to keep the total group count very low; under 10.  Even 1 is good, as there will be no functional difference between images acquired with the same run.
 
 #### `Manage Datasets` Button ####
-Each run creates a new dataset.  A dataset is a folder names with a time stamp of the second it was created.  The folder contains:
+Each run creates a new dataset.  A dataset is a folder named with a time stamp of the second it was created.  The folder contains:
 - The configuration file that generated it
 - A log file of the messages generated while it was running
-- A folder containing the images acquired during the run.  The name of each image is a `.raw` file whose name is the time stamp it was acquired at.  Files with the `.raw` extension contain a simple array of pixels.  They must be converted in order to be viewed by standard image rendering tools.
+- The images acquired during the run.  The name of each image is a `.raw` file whose name provides the time stamp it was acquired at.  Files with the `.raw` extension contain a simple array of pixels.  They must be converted in order to be viewed by standard image rendering tools.
 
 ![Manage Datasets popup](./images/ManageDatasets_Detail.png)
 
@@ -149,30 +149,63 @@ Note that in Chrome, it is possible that the `http:` protocol used to talk with 
 Deletion is quicker, and happens in a few seconds, depending on the size of the dataset.  There is no confirmation dialog, so be sure before you press!  
 
 ### Configuration Fields ###
+The configuration fields provide all the values needed to execute a run and collect a dataset.  When the `Save` button is pressed,each of the following fields is collected into the configuration JSON file.  
+
 ![Timing Configuration Fields](./images/Configuration_Fields.png)
 
 #### General ####
-- `Delay to Start`
+- `Delay to Start`  A delay in minutes before the run starts.  This is used to allow time after pressing `Execute` so that the instrument can be physically deployed and placed in the water before data acquisition starts.  
+
 #### Camera Settings ####
-- `Black level`
-- `Gain`
-- `Gamma`
+- `Black level`  The level of brightness at the darkest (black) part of a visual image or the level of brightness at which no light is detected by the camera.  
+- `Gain`  The brightness of each pixel in the image is the result of multiplying each raw sensor value for that pixel by this gain.  
+- `Gamma`  The brightness of each pixel in the image is the result of raising each raw sensor value for that pixel to the `Gamma` power. Gammas larger than 1 make the shadows darker, while gammas smaller than 1 make dark regions lighter.  
+
 #### Timing ####
-- `Shutter Time`
-- `Laser Time`
-- `Number of frames in group`
-- `Frame repeat period`
-- `Group repeat period`
-- `Total group count`
+- `Shutter Time`  How long in milliseconds the shutter is open for each frame.  
+- `Laser Time`  How long in milliseconds the laser is on during each frame.  
+- `Number of frames in group`  The number of frames that constitute a group.  
+- `Frame repeat period`  The time in milliseconds between the start of one frame to the start of the next frame.  
+- `Group repeat period`  The time in milliseconds between the start of one group to the start of the next group.  
+- `Total group count`  A run constitutes this number of groups.
 
 ### Status and Diagnostic Fields ###
-- `Progress`
-- `Seconds`
-- `Count`
-- `Execution Starting`
-- `Execution Running`
-- `Log Field`
+The status and diagnostic fields have no effect on the run and are not part of any configuration.  If the Wifi connection to the instrument is lost, these will stop updating, but the instrument will continue running.  
+
+- `Progress`  Various messages appear here showing the progress of the run.  
+- `Seconds`  During the startup delay, this field provides a countdown until the delay is over.  
+- `Count`  During the run, this field provides a count of the images collected; the number of frames executed.
+- `Execution Starting`  This light indicates that the `Execute` button press has been seen, but the instrument has not yet acknowledged it.  
+- `Execution Running`  This light acknowledges that the instrument has started a run in response to the `Execute` button request.  If for some reason (e.g., the camera did not respond), this light would go out.  
+- `Log Field`  Although not labeled, this field captures a running log of status messages.  A log file in the run will also contain these messages.  
+
 ## Files and Directory Structure ##
+All the program files are downloaded from the PIV git repository (normally from github.com) into `/home/piv/github/PIV`.  Some of these files, notably in the `bootfiles` subfolder, are copied to system configuration folders to control the instrument during linux boot.  See the [details here](./src/README.md).
+
+Here we will concentrate on the files and directories used in the operation of the PIV instrument.  These are always stored on the M.2 NVMe drive, which as of this writing is a 2 TB drive. (Larger drive sizes are possible, and may be used in the future.)  This drive is always mounted at the Linux root as `/pivdata`.  All instrument files are stored in subfolders of this directory.
+
 ### Configuraiton Files ###
+All configuration files are stored in `/pivdata/configuration`.  Normally, these are written and deleted by the web-based SPA application, but an advanced user could place them by hand.  **Be sure that the file structure is a valid configuration file!**  Configuration files may have any legal Linux filename, but must end with the `.json` extension.  All files in this directory with a `.json` extension will show up in the SPA web page list of configurations.  
+
+It is also possible to deploy by hand by creating a file named `__runfile__.deploy` in the same directory.  This file names the configuration to run.  Here is an example of the file.  
+
+```
+{
+  "configurationName": "LongRunning" 
+}
+```
+
+When the file is created, the deployment will start with the named configuration.
+
 ### Dataset Files ###
-### Test Configuration File ###
+All data is acquired during a run and placed in `/pivdata/data`.  Run folders are named with a time stamp indicating the starting time of the run.  The folder names are of the form `YYYY-MM-DD_HH.MM.SS`.  The time zone used is UTC.  For example, the folder name for a run on June 10, 2026 starting at 12:44:54 Pacific daylight time (8:44:54 pm UTC) would be `2026-06-10_20:44:54`.
+
+Within the run folder, the files for the run are stored:
+- `configuration.json`  The configuration used for the run.
+- `runsettings.json`  The settings used by the Raspberry Pi Pico to generate the timing for camera shutter and laser.
+- `piv.log`  A log of all messages generated during the run.
+- `TTTTTTT-SSSSSSSS-NNN.raw`  Each image captured from the camera is stored as a raw image, a simple array of pixel values.  The file name is composed of seven digits of ticks since the start of the run, in milliseconds, followed by the serial number of the camera, followed by the sequence number of the image witin the run, starting at 0.  The time stamp of the folder name is taken to be the starting time of the run, so the image file names give the number of millisecnds since that starting time.  This should normally be the configured delay time in milliseconds plus some hundreds of milliseconds to account for configuring the camera.  
+
+### Test Dataset Files ###
+When the `Test` button is pressed, many small runs are executed sequentially.  All tests reuse the same `/pivdata/test` folder, so only the most recent test data is available.  The `/pivdata/test` folder contains the base configuration and run settings files.  Each run is from a signle part of a sweep of some parameter.  The runs are named with the parameter and value of the parameter.  Within each run folder are the raw image files for that part of the sweep.
+
