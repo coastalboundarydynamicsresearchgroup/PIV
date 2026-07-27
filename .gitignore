@@ -44,3 +44,5 @@ Microcontrollers/RPipico/picocc/__pycache__/*
 src/pivexec/__pycache__/*
 src/pivexec/*.png
 src/pivdeploy/public/archive/*
+src/pivexec/*.raw
+src/pivexec/*.jpg

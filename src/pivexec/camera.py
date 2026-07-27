@@ -128,6 +128,42 @@ class Camera:
 
     return
 
+  def configure_soft_trigger(self):
+    """
+    This function configures the camera trigger mode.
+    """
+    try:
+      if self.cam.TriggerMode.GetAccessMode() != PySpin.RW:
+        self.status = "Trigger mode not available"
+        self.valid = False
+        return
+      if self.cam.AcquisitionMode.GetAccessMode() != PySpin.RW:
+        self.status = "Acquisition mode not available"
+        self.valid = False
+        return
+      if self.cam.TriggerSelector.GetAccessMode() != PySpin.RW:
+        self.status = "Trigger selector not available"
+        self.valid = False
+        return
+      if self.cam.TriggerSource.GetAccessMode() != PySpin.RW:
+        self.status = "Trigger source not available"
+        self.valid = False
+        return
+
+      self.cam.TriggerMode.SetValue(PySpin.TriggerMode_Off)
+      self.cam.AcquisitionMode.SetValue(PySpin.AcquisitionMode_SingleFrame)
+      self.cam.TriggerSelector.SetValue(PySpin.TriggerSelector_FrameStart)
+      self.cam.TriggerSource.SetValue(PySpin.TriggerSource_Software)
+      self.cam.TriggerMode.SetValue(PySpin.TriggerMode_On)
+      self.status = "Trigger mode set to frame start on line 0"
+      self.valid = True
+
+    except PySpin.SpinnakerException as ex:
+      self.status = f'Error: {ex}'
+      self.valid = False
+
+    return
+
   def reset_trigger(self):
     """
     This function resets the camera trigger mode to continuous.
@@ -148,6 +184,37 @@ class Camera:
 
     return
 
+
+  def configure_chunk_timestamp(self):
+    """
+    This function configures the camera chunk data.
+    """
+    try:
+      if self.cam.ChunkModeActive.GetAccessMode() != PySpin.RW:
+        self.status = "Chunk mode not available"
+        self.valid = False
+        return
+      if self.cam.ChunkSelector.GetAccessMode() != PySpin.RW:
+        self.status = "Chunk selector not available"
+        self.valid = False
+        return
+      if self.cam.ChunkEnable.GetAccessMode() != PySpin.RW:
+        self.status = "Chunk enable not available"
+        self.valid = False
+        return
+
+      self.cam.ChunkModeActive.SetValue(True)
+      self.cam.ChunkSelector.SetValue(PySpin.ChunkSelector_Timestamp)
+      self.cam.ChunkEnable.SetValue(True)
+      self.status = "Chunk mode set to timestamp and active"
+      self.valid = True
+
+    except PySpin.SpinnakerException as ex:
+      self.status = f'Error: {ex}'
+      self.valid = False
+
+    return
+  
 
   def configure_black_level(self, black_level):
     """
@@ -373,6 +440,29 @@ class Camera:
     return
 
 
+  def trigger_software(self):
+    """
+    This function triggers the camera using software trigger.
+    """
+    try:
+      if self.cam.TriggerSoftware.GetAccessMode() != PySpin.WO & self.cam.TriggerSoftware.GetAccessMode() != PySpin.RW:
+        self.status = "Software trigger not available"
+        self.valid = False
+        return
+
+      self.cam.TriggerSoftware.Execute()
+      self.status = "Software trigger executed"
+      self.valid = True
+
+      time.sleep(1)  # Sleep for 100 ms to allow the camera to process the trigger
+
+    except PySpin.SpinnakerException as ex:
+      self.status = f'Error: {ex}'
+      self.valid = False
+
+    return
+  
+
   def acquire_image(self, folder='./', convert=False):
     """
     This function acquires and saves 10 images from a device.
@@ -392,6 +482,11 @@ class Camera:
         self.valid = False
 
       else:
+        if image_result.HasChunkData():
+            chunk_data = image_result.GetChunkData()
+            timestamp = chunk_data.GetTimestamp()
+            print(f'timestamp: {timestamp} ns')
+
         # Create a unique filename, save image to file.
         filename = f'{current_tick:07d}-{self.caminfo["DeviceSerialNumber"]}-{self.imagenumber}.raw'
         image_result.Save(folder + filename)
@@ -406,6 +501,7 @@ class Camera:
         self.imagenumber += 1
 
     except PySpin.SpinnakerException as ex:
+      self.status = f'Error: {ex}'
       result = False
 
     return result
