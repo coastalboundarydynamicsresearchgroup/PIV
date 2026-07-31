@@ -21,6 +21,7 @@ class Camera:
     self.system = None
     self.imagenumber = 0
     self.exposure_time_us = 0
+    self.baseline_time = 0
 
     self.status = ""
     self.valid = False
@@ -215,6 +216,34 @@ class Camera:
 
     return
   
+  def reset_chunk_timestamp(self):
+    """
+    This function resets the camera trigger mode to continuous.
+    """
+    try:
+      if self.cam.ChunkModeActive.GetAccessMode() != PySpin.RW:
+        self.status = "Chunk mode not available"
+        self.valid = False
+        return
+      if self.cam.ChunkSelector.GetAccessMode() != PySpin.RW:
+        self.status = "Chunk selector not available"
+        self.valid = False
+        return
+      if self.cam.ChunkEnable.GetAccessMode() != PySpin.RW:
+        self.status = "Chunk enable not available"
+        self.valid = False
+        return
+
+      self.cam.ChunkModeActive.SetValue(False)
+      self.cam.ChunkEnable.SetValue(False)
+      self.status = "Chunk mode set to disabled"
+      self.valid = True
+
+    except PySpin.SpinnakerException as ex:
+      self.status = f'Error: {ex}'
+      self.valid = False
+
+    return
 
   def configure_black_level(self, black_level):
     """
@@ -482,13 +511,18 @@ class Camera:
         self.valid = False
 
       else:
+        timestamp = 0
         if image_result.HasChunkData():
             chunk_data = image_result.GetChunkData()
             timestamp = chunk_data.GetTimestamp()
-            print(f'timestamp: {timestamp} ns')
+            if self.baseline_time == 0:
+              self.baseline_time = timestamp
+            timestamp -= self.baseline_time
+
 
         # Create a unique filename, save image to file.
-        filename = f'{current_tick:07d}-{self.caminfo["DeviceSerialNumber"]}-{self.imagenumber}.raw'
+        mstimestamp = int(timestamp/1000000)
+        filename = f'{mstimestamp:07d}-{self.caminfo["DeviceSerialNumber"]}-{self.imagenumber}.raw'
         image_result.Save(folder + filename)
 
         # Do in-line jpg conversion in test mode only.

@@ -68,6 +68,7 @@ class PicoExecuteCompose(PivExecuteCompose):
   def camera_configure(self, camera):
     # Configure the camera with the settings from the configuration
     camera.configure_trigger()
+    camera.configure_chunk_timestamp()
     camera.configure_exposure(self.runstate.configuration['ShutterOpenTime'])
     camera.configure_black_level(self.runstate.configuration['CameraBlacklevel'])
     camera.configure_gain(self.runstate.configuration['CameraGain'])
@@ -76,6 +77,7 @@ class PicoExecuteCompose(PivExecuteCompose):
   def camera_reset_configuration(self, camera):
     # Reset the camera configuration to default
     camera.reset_trigger()
+    camera.reset_chunk_timestamp()
     camera.reset_exposure()
     camera.reset_black_level()
     camera.reset_gain()
