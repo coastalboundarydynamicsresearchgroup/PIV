@@ -129,41 +129,6 @@ class Camera:
 
     return
 
-  def configure_soft_trigger(self):
-    """
-    This function configures the camera trigger mode.
-    """
-    try:
-      if self.cam.TriggerMode.GetAccessMode() != PySpin.RW:
-        self.status = "Trigger mode not available"
-        self.valid = False
-        return
-      if self.cam.AcquisitionMode.GetAccessMode() != PySpin.RW:
-        self.status = "Acquisition mode not available"
-        self.valid = False
-        return
-      if self.cam.TriggerSelector.GetAccessMode() != PySpin.RW:
-        self.status = "Trigger selector not available"
-        self.valid = False
-        return
-      if self.cam.TriggerSource.GetAccessMode() != PySpin.RW:
-        self.status = "Trigger source not available"
-        self.valid = False
-        return
-
-      self.cam.TriggerMode.SetValue(PySpin.TriggerMode_Off)
-      self.cam.AcquisitionMode.SetValue(PySpin.AcquisitionMode_SingleFrame)
-      self.cam.TriggerSelector.SetValue(PySpin.TriggerSelector_FrameStart)
-      self.cam.TriggerSource.SetValue(PySpin.TriggerSource_Software)
-      self.cam.TriggerMode.SetValue(PySpin.TriggerMode_On)
-      self.status = "Trigger mode set to frame start on line 0"
-      self.valid = True
-
-    except PySpin.SpinnakerException as ex:
-      self.status = f'Error: {ex}'
-      self.valid = False
-
-    return
 
   def reset_trigger(self):
     """
@@ -468,29 +433,6 @@ class Camera:
 
     return
 
-
-  def trigger_software(self):
-    """
-    This function triggers the camera using software trigger.
-    """
-    try:
-      if self.cam.TriggerSoftware.GetAccessMode() != PySpin.WO & self.cam.TriggerSoftware.GetAccessMode() != PySpin.RW:
-        self.status = "Software trigger not available"
-        self.valid = False
-        return
-
-      self.cam.TriggerSoftware.Execute()
-      self.status = "Software trigger executed"
-      self.valid = True
-
-      time.sleep(1)  # Sleep for 100 ms to allow the camera to process the trigger
-
-    except PySpin.SpinnakerException as ex:
-      self.status = f'Error: {ex}'
-      self.valid = False
-
-    return
-  
 
   def acquire_image(self, folder='./', convert=False):
     """
