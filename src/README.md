@@ -32,7 +32,7 @@ The PIV code is assumed to have been cloned from the github repository into a fo
 Execute the generic steps above in the `~/github/PIV/src/pivdeploy` directory, commiting the 1.1 version as `louisross/piv-deploy:1.1`.
 
 ## Install Dependencies for pivexec Component
-`$ python -m pip install --user watchdog,pyserial,requests`
+`$ python -m pip install --user watchdog pyserial requests`
 
 `$ mkdir /pivdata/data`  
 `$ mkdir /pivdata/configuration`  
@@ -62,7 +62,7 @@ To enable these files to start services automatically, first copy them to `/etc/
 - `> sudo systemctl enable pivexecute.service`  
 
 For test, also start them manually:  
-- `> sudo systemctl start pivexecute.service`  
+- `> sudo systemctl start docker-compose-piv.service`  
 - `> sudo systemctl start pivexecute.service`  
 
 The whole acquisition system, including the SPA web page and laser/camera control, should now be running.  You should be able to confirm by connecting with a web browser.
