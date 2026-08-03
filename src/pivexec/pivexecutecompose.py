@@ -51,9 +51,6 @@ class PivExecuteCompose:
         with open(PivExecuteCompose.pivFilePath + "configuration.json", "w") as outfile:
             outfile.write(config)
 
-        with open(PivExecuteCompose.pivFilePath + "RunIndex.csv", "w") as outfile:
-            outfile.write("Time Stamp,Type,File\n")
-
     def stop_deployment(self):
         PivExecuteCompose.diagnostic.emit_status("Stopping deployment", logToProgress=True)
         requests.put(PivExecuteCompose.baseBackendUrl + '/piv/stop')
